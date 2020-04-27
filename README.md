@@ -1,0 +1,2 @@
+# TaskManager
+TaskManager项目是Android基线在做启动优化过程中沉淀的一套任务调度管理库，对APP启动优化提速效果明显，也经过基线线上亿级用户的稳定性验证
