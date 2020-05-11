@@ -36,7 +36,7 @@ dependencies {
 
 ###  开发指南
 
-* [API document wiki](http://gitlab.qiyi.domain/licaifu/TaskManger/wikis/home)
+* [API document wiki](https://github.com/iqiyi/TaskManager/wiki)
 
 ###  License
 
