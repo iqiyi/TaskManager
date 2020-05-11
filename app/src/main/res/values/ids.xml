@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="task_1" type="id"/>
+    <item name="task_2" type="id"/>
+    <item name="task_3" type="id"/>
+    <item name="task_4" type="id"/>
+    <item name="task_5" type="id"/>
+    
+    <item name="event_vv" type="id"/>
+
+
+    <item name="tash_v1" type="id"/>
+    <item name="tash_v2" type="id"/>
+</resources>

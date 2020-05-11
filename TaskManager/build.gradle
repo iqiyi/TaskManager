@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion MyCompileSdkVersion
+
+
+    defaultConfig {
+        minSdkVersion MyMinSdkVersion
+        targetSdkVersion MyTargetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.annotation:annotation:1.0.0'
+//    implementation 'qiyi.lens:qylens:0.7.9.1'
+}
+
+//apply from: "$rootDir/gradle/maven.gradle"
+//apply from: "$projectDir/bintry.gradle"

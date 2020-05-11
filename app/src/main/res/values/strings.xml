@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TMDemo</string>
+    <string name="title_activity_main">MainActivity</string>
+    <item name="task_test_1" type="id"/>
+    <item name="task_test_2" type="id"/>
+    <item name="task_test_3" type="id"/>
+
+</resources>
