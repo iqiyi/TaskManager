@@ -23,6 +23,7 @@ import com.qiyi.tm.demo.test.Test;
 import com.qiyi.tm.demo.test.TestExecuteNow;
 import com.qiyi.tm.demo.test.TestReject;
 import com.qiyi.tm.demo.test.TestSerial;
+import com.qiyi.tm.demo.test.TriggerEventTest;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = "MainActivity";
@@ -36,18 +37,22 @@ public class MainActivity extends AppCompatActivity {
         textView.setGravity(Gravity.CENTER);
         textView.setText("TaskManager Demo");
         setContentView(textView);
-        createTest(14).doTest();
+        createTest(15).doTest();
     }
 
     private Test createTest(int id) {
         switch (id) {
             case 1:
+                //test to post a task to run in background thread
                 return new AsyncTest();
             case 2:
+                //test to cancel a task by id or token
                 return new CancelTest();
             case 3:
+                //test for api: DependantAfterTest
                 return new DependantAfterTest();
             case 4:
+                //test for task dependency relationship
                 return new DependantTest();
             case 5:
                 return new EventTaskTest();
@@ -69,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 return new TestReject();
             case 14:
                 return new TestSerial();
-
+            case 15:
+                return new TriggerEventTest();
             default:
                 return new AsyncTest();
         }

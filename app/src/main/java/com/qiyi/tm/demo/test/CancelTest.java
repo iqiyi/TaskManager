@@ -1,5 +1,7 @@
 package com.qiyi.tm.demo.test;
 
+import com.qiyi.tm.demo.R;
+
 import org.qiyi.basecore.taskmanager.TM;
 import org.qiyi.basecore.taskmanager.Task;
 
@@ -10,11 +12,20 @@ public class CancelTest extends Test {
 
     @Override
     public void doTest() {
-        Task task = getTask("0t");
+        Task task = new Task("CancelTest-task-1", R.id.task_1) {
+            @Override
+            public void doTask() {
+            }
+        };
+
         task.setToken(this);
         task.postUIDelay(1000);
 
-        Task task2 = getTask("2t");
+        Task task2 = new Task("CancelTest-task-1", R.id.task_2) {
+            @Override
+            public void doTask() {
+            }
+        };
         task2.postUIDelay(1000);
         task2.setToken(this);
 

@@ -120,14 +120,6 @@ public abstract class TickTask implements Runnable, ITask {
 
     public abstract void onTick(int loopTime);
 
-
-    @Deprecated
-    public TickTask setInterval(int time) {
-        this.interval = time;
-        intervalModeBefore = false;
-        return this;
-    }
-
     public TickTask setIntervalWithFixedDelay(int time) {
         this.interval = time;
         intervalModeBefore = false;

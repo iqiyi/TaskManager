@@ -42,18 +42,6 @@ public class TaskManagerConfig implements ITaskManagerConfig {
         return this;
     }
 
-    /**
-     * use setLogTracker instead
-     *
-     * @param logger
-     * @return
-     */
-    @Deprecated
-    public TaskManagerConfig setLogger(ITracker logger) {
-        this.logger = logger;
-        return this;
-    }
-
     public TaskManagerConfig setLogTracker(ITracker logger) {
         this.logger = logger;
         return this;
@@ -139,11 +127,6 @@ public class TaskManagerConfig implements ITaskManagerConfig {
     public TaskManagerConfig setWaitTimeCollectThreshold(long waitTimeCollectThreshold) {
         this.waitTimeCollectThreshold = waitTimeCollectThreshold;
         return this;
-    }
-
-    @Deprecated
-    public void commit() {
-        TaskManager.setConfig(this);
     }
 
     public void initTaskManager(Application application) {

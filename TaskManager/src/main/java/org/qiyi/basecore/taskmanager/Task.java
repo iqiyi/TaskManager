@@ -639,12 +639,6 @@ public abstract class Task extends Job {
     }
 
 
-    @Deprecated
-    public void executeAsync() {
-        postAsync();
-    }
-
-
     /**
      * 在子线程中立即执行
      */
@@ -653,11 +647,6 @@ public abstract class Task extends Job {
             taskPriority = Integer.MAX_VALUE;
             TaskManager.getInstance().enqueue(this);
         }
-    }
-
-    @Deprecated
-    public void executeAsyncDelay(int ms) {
-        postAsyncDelay(ms);
     }
 
     public void postUIDelay(int ms) {
@@ -751,12 +740,6 @@ public abstract class Task extends Job {
             this.mRunningThread = Looper.myLooper() == Looper.getMainLooper() ? RunningThread.UI_THREAD : RunningThread.BACKGROUND_THREAD;
             TaskManager.getInstance().enqueue(this);
         }
-    }
-
-
-    @Deprecated
-    public void executePostSync() {
-        postUI();
     }
 
     private void enqueuePreferred(RunningThread preferred) {
