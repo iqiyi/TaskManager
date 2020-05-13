@@ -1,5 +1,6 @@
 
 * [中文文档](README-CN.md)
+* [Release Note](https://github.com/iqiyi/TaskManager/wiki/ReleaseNote-EN)
 
 ##### Task manager is an Android task management tool. It is capable of handling complex task work flow. It's low-coupling, flexible & stable. It supports relation-based tasks. All tasks will be executed in a well-managed order. It can submit tasks with complex relations such as “Or Dependency” or “And Dependency”. Meanwhile, parallel tasks and serial tasks are also supported. 
 

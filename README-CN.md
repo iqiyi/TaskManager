@@ -1,3 +1,6 @@
+* [English](README-CN.md)
+* [版本信息](https://github.com/iqiyi/TaskManager/wiki/ReleaseNote-CN)
+
  Task manager 是一个支持关系依赖的Android任务管理SDK。它具备处理复杂任务依赖关系的能力，可用于加速一些耗时任务执行过程。它支持 "与依赖"，“或依赖", 支持”并行任务“、”串行任务“、"事件任务"等等，API 非常灵活易用。除此之外，它还实现了任务兜底机制，为任务异步并发后的稳定性提供了技术支撑。
 
 ### 特性
