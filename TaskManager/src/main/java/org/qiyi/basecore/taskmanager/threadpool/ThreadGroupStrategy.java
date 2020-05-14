@@ -56,7 +56,7 @@ public final class ThreadGroupStrategy implements IThreadStrategy, IThreadIdleCa
 
     //called when task starts to run
     @Override
-    public void dequeue(int priority) {
+    public void onLoseThread(int priority) {
         // do nothing
         threadCount.decrementAndGet();
     }

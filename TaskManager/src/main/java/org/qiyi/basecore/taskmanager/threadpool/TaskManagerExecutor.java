@@ -68,7 +68,7 @@ class TaskManagerExecutor implements ITaskExecutor {
     private TaskBlockingQueue rejectedQueue = new TaskBlockingQueue();
 
     private TaskBlockingQueue highPriorityRejectedQueue = new TaskBlockingQueue();
-    private Handler workHandlerLowPriority;//低优先级执行队列
+    private volatile Handler workHandlerLowPriority;//低优先级执行队列
     private final int HIGH_PRIORITY_THREAD_MAX_SIZE = 3;
     private int NORMAL_PRIORITY_THREAD_MAX_SIZE = 5;
     private int REJECT_QUEUE_BUSY_TASK_SIZE = 3; // 堆积了三个任务,任务是忙的状态

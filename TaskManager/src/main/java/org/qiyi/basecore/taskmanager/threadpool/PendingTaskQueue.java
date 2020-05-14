@@ -1,6 +1,7 @@
 package org.qiyi.basecore.taskmanager.threadpool;
 
 import android.os.Handler;
+
 import org.qiyi.basecore.taskmanager.TM;
 import org.qiyi.basecore.taskmanager.TaskWrapper;
 import org.qiyi.basecore.taskmanager.other.TMLog;
@@ -10,7 +11,7 @@ public class PendingTaskQueue implements ITaskQueue {
     private Handler workHandler;
 
 
-    public PendingTaskQueue(Handler handler){
+    public PendingTaskQueue(Handler handler) {
         workHandler = handler;
     }
 

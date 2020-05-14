@@ -21,7 +21,7 @@ public class GroupedThreadPool implements ITaskExecutor {
     private Handler workHandler;
     private int cupCores;
     private IThreadStrategy strategy;
-    private Handler workHandlerLowPriority;//低优先级执行队列
+    private volatile Handler workHandlerLowPriority;//低优先级执行队列
     private ITaskQueue highQueue;
     private ITaskQueue normalQueue;
 
@@ -73,7 +73,7 @@ public class GroupedThreadPool implements ITaskExecutor {
     @Override
     //mark a task has been finished
     public void dequeue(int priority) {
-        strategy.dequeue(priority);
+        strategy.onLoseThread(priority);
     }
 
     public void workPostDelay(Runnable runnable, int time) {
@@ -86,7 +86,7 @@ public class GroupedThreadPool implements ITaskExecutor {
 
     @Override
     public void bringToFront(int taskId) {
-        // todo
+        // do nothing
     }
 
     // for debug: dump inside data

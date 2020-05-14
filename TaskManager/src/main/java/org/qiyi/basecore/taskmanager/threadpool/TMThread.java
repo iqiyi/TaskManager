@@ -15,6 +15,7 @@ public class TMThread extends Thread {
 
     public TMThread(TMThreadGroup group, IThreadIdleCallback callback, ITaskQueue queue, String name, int priority, int index, int live, boolean quit) {
         super(name + priority + "-" + index);
+        this.setPriority(priority);
         liveTime = live;
         mQueue = queue;
         mPriority = priority;

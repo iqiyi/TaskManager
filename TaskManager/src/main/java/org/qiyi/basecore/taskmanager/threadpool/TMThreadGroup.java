@@ -75,7 +75,7 @@ public class TMThreadGroup implements IThreadIdleCallback {
 
         // no need to sync
         tempThreadCount--;
-        if(tempThreadCount < 0) {
+        if (tempThreadCount < 0) {
             tempThreadCount = 0;
         }
     }
@@ -97,18 +97,18 @@ public class TMThreadGroup implements IThreadIdleCallback {
                 // add worker to max size
                 if (mSize <= activeCount.get()) {
                     addWorker(mMaxSize, true);
-                } else if(taskPriority == Task.TASK_PRIORITY_MAX) {
+                } else if (taskPriority == Task.TASK_PRIORITY_MAX) {
                     //for execuye now
-                    if(tempThreadCount < TEMP_THREAD_MAX) {
-                        tempThreadCount ++;
+                    if (tempThreadCount < TEMP_THREAD_MAX) {
+                        tempThreadCount++;
                     }
-                    addWorker(mMaxSize + tempThreadCount , true);
+                    addWorker(mMaxSize + tempThreadCount, true);
                 }
                 break;
             case ITaskQueue.HEAVY:
                 TMLog.e(TAG, "too much task to run !", mTaskQueue.size(), mName);
-                if(tempThreadCount < TEMP_THREAD_MAX) {
-                    tempThreadCount ++;
+                if (tempThreadCount < TEMP_THREAD_MAX) {
+                    tempThreadCount++;
                 }
                 addWorker(mMaxSize + tempThreadCount, true);
                 break;
