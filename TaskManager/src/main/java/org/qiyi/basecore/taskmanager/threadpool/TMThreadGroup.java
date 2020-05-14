@@ -38,11 +38,10 @@ public class TMThreadGroup implements IThreadIdleCallback {
     //add thread if thread size < max
     private void addWorker(int max, boolean autoQuit) {
         if (mSize < max) {
-            TMLog.d(TAG, mSize + "add worker " + max + " " + autoQuit);
             TMThread tmThread = null;
             synchronized (this) {
                 if (mSize < max) {
-                    tmThread = new TMThread(this, this, mTaskQueue, mName, mPriority, mSize, mSize * 3000, autoQuit);
+                    tmThread = new TMThread(this, this, mTaskQueue, mName, mPriority, mSize, mSize * 10000, autoQuit);
                     threads[mSize] = tmThread;
                     mSize++;
                 }
@@ -83,15 +82,13 @@ public class TMThreadGroup implements IThreadIdleCallback {
     public void execute(TaskWrapper taskWrapper, int taskPriority) {
         mTaskQueue.offer(taskWrapper, taskPriority);
         int state = mTaskQueue.getQueueState();
-
         if (TM.isFullLogEnabled()) TMLog.d(TAG, "execute called " + state);
 
         switch (state) {
             case ITaskQueue.AVERAGE:
                 //add worker to core size
-                if (mSize <= activeCount.get()) {
-                    addWorker(mCoreSize, false);
-                }
+                // when < core : prefer to create thread , not reuse one
+                addWorker(mCoreSize, false);
                 break;
             case ITaskQueue.BUSY:
                 // add worker to max size

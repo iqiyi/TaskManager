@@ -30,6 +30,11 @@ public class TMThread extends Thread {
 
     @Override
     public void run() {
+
+        if (idleCallback != null) {
+            idleCallback.onIdle(false);
+        }
+
         long waitTime;
         while (started) {
             Runnable runnable = mQueue.dequeue(mPriority);
