@@ -14,9 +14,9 @@ public class NeedSyncTest extends Test {
     @Override
     public void doTest() {
 
-//        testPending();
+        testPending();
 //        testRunning();
-        testFinished();
+//        testFinished();
     }
 
     /**
@@ -46,7 +46,7 @@ public class NeedSyncTest extends Test {
      */
     private void testRunning() {
 
-        final Task task = getTask("waka-running", 8000);
+        final Task task = getTask(TAG+" waka-running", 8000);
         task.postAsync();
 
         new Task() {

@@ -11,8 +11,8 @@ public class OrdependTest extends Test {
 
     @Override
     public void doTest() {
-        test2();
-//        test1();
+//        test2();
+        test1();
     }
 
 

@@ -18,10 +18,10 @@ public class EventTaskTest extends Test {
     @Override
     public void doTest() {
 
-        triggerEventTask();
+//        triggerEventTask();
 //        triggerEvent();
 //        triggerSelfDefinedEvent();
-//        triggerGlobalEvent();
+        triggerGlobalEvent();
     }
 
 

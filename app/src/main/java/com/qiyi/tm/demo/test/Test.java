@@ -9,7 +9,7 @@ import org.qiyi.basecore.taskmanager.Task;
 
 public abstract class Test implements ITest {
     int var;
-    protected final static String TAG = "Test";
+    protected final static String TAG = "TM_Test";
 
     protected ThreadCheckTask getTask(int time) {
         return getTask((++var) + "", time, null);

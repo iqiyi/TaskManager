@@ -35,6 +35,7 @@ import org.qiyi.basecore.taskmanager.impl.model.TaskContainer;
 import org.qiyi.basecore.taskmanager.other.ExceptionUtils;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.CleanUp;
+import org.qiyi.basecore.taskmanager.threadpool.ThreadPoolFactory;
 
 import java.util.List;
 
@@ -65,26 +66,21 @@ public class TaskManager {
 
 
     private TaskManager() {
-
-        this.mTaskExecutor = new TaskManagerExecutor();
-        this.mSchedulerManager = new SchedulerManager(this);
+        getTaskManagerConfig();
+        defaultTimeOut = mConfig.getDefaultTimeout();
+        taskPriorityTimePerGrade = mConfig.getTaskPriorityGradePerTime();
+        this.mTaskExecutor = ThreadPoolFactory.createExecutor(mConfig.getThreadPoolStrategy());
+        // reuse pool clean up & reference pool clean up
         mainHandler = mTaskExecutor.getMainHandler();
-
-        if (mConfig != null) {
-            defaultTimeOut = mConfig.getDefaultTimeout();
-            taskPriorityTimePerGrade = mConfig.getTaskPriorityGradePerTime();
-            // reuse pool clean up & reference pool clean up
-            if (mConfig.isMemoryCleanUpEnabled()) {
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        CleanUp.go();
-                    }
-                }, 5000);
-            }
-        } else {
-            getTaskManagerConfig();
+        if (mConfig.isMemoryCleanUpEnabled()) {
+            mainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    CleanUp.go();
+                }
+            }, 5000);
         }
+        this.mSchedulerManager = new SchedulerManager(this);
 
     }
 

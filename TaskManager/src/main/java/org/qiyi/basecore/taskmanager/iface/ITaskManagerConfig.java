@@ -8,6 +8,9 @@ import org.qiyi.basecore.taskmanager.deliver.ITracker;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
 
 public interface ITaskManagerConfig {
+    int STRATEGY_POOL_EXECUTOR = 1;
+    int STRATEGY_THREAD_GROUP = 2;
+
     ITaskManagerConfig enableObjectReuse(boolean b);
 
     ITaskManagerConfig setDefaultTimeOut(int timeOut);
@@ -28,6 +31,8 @@ public interface ITaskManagerConfig {
     ITaskManagerConfig setLowTaskPriorityTaskMaxWaitTime(int timeInms);
 
     ITaskManagerConfig setWaitTimeCollectThreshold(long waitTimeCollectThreshold);
+
+    ITaskManagerConfig setThreadPoolStrategy(int strategy);
 
     void initTaskManager(Application application);
 }

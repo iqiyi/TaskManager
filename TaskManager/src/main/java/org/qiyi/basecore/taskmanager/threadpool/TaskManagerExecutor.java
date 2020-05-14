@@ -15,12 +15,18 @@
  * limitations under the License.
  *
  */
-package org.qiyi.basecore.taskmanager;
+package org.qiyi.basecore.taskmanager.threadpool;
 
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 
+import org.qiyi.basecore.taskmanager.RunningThread;
+import org.qiyi.basecore.taskmanager.TM;
+import org.qiyi.basecore.taskmanager.Task;
+import org.qiyi.basecore.taskmanager.TaskManager;
+import org.qiyi.basecore.taskmanager.TaskWrapper;
+import org.qiyi.basecore.taskmanager.ThreadPriority;
 import org.qiyi.basecore.taskmanager.deliver.TaskManagerDeliverHelper;
 import org.qiyi.basecore.taskmanager.iface.ITaskExecutor;
 import org.qiyi.basecore.taskmanager.impl.model.TaskContainer;
@@ -68,7 +74,6 @@ class TaskManagerExecutor implements ITaskExecutor {
     private int REJECT_QUEUE_BUSY_TASK_SIZE = 3; // 堆积了三个任务,任务是忙的状态
     private volatile boolean executeIdleHigh = false;
     private volatile boolean executeIdleNormal = false;
-    private int MAX_THREAD_COUNT;
 
     private int aliveThreadCount;
     private int maxRunningAmount;
@@ -100,8 +105,6 @@ class TaskManagerExecutor implements ITaskExecutor {
 //        MAX_THREAD_COUNT = NORMAL_PRIORITY_THREAD_MAX_SIZE + HIGH_PRIORITY_THREAD_MAX_SIZE;
         // 设置限制数量， 设置为最大值， 就相当与不限制。 大于最大可用线程数量的限制也是没有意义的。
         maxRunningAmount = Integer.MAX_VALUE;
-
-
     }
 
 
@@ -229,7 +232,7 @@ class TaskManagerExecutor implements ITaskExecutor {
         }
 
         if (runnable != null) {
-            executeOnBackgroundThread(runnable, pri, runnable.taskPriority);
+            executeOnBackgroundThread(runnable, pri, runnable.getTaskPriority());
         } else {
             if (pri == Thread.MAX_PRIORITY) {
                 executeIdleHigh = true;
@@ -360,7 +363,7 @@ class TaskManagerExecutor implements ITaskExecutor {
     // 限制最大同时运行的线程数量
     public void setMaxRunningThreadCount(int count) {
         if (count < 0) {
-            maxRunningAmount = MAX_THREAD_COUNT;// reset
+            maxRunningAmount = Integer.MAX_VALUE;// reset
         }
         maxRunningAmount = count;
     }

@@ -8,10 +8,10 @@ import org.qiyi.basecore.taskmanager.other.TMLog;
 public class DependantTest extends Test {
     @Override
     public void doTest() {
-//        taskiii();
+        taskiii();
 //        taskDDD();
-        orDependant();
-
+//        orDependant();
+//        orDependant2();
     }
 
     protected void assetThread(boolean ui) {
@@ -42,6 +42,7 @@ public class DependantTest extends Test {
 
     /**
      * direct task dependant
+     * Task 3 should be executed on UI thread
      */
     private void taskDDD() {
         Task task1 = getTask("task1");
@@ -54,6 +55,9 @@ public class DependantTest extends Test {
     }
 
 
+    /**
+     * 当Ordelay 设置的时间 < 依赖任务完成的时间时候
+     */
     private void orDependant() {
         Task task1 = getTask("task11");
         task1.postAsyncDelay(2010);
@@ -65,7 +69,28 @@ public class DependantTest extends Test {
             }
         }.dependOn(R.id.task_1, R.id.task_2) // not running
                 .orDependOn(R.id.task_3, R.id.task_4) // not running
-                .orDelay(2000) // run after 2000ms
+                .orDelay(8000) // run after 2000ms
                 .post();
     }
+
+
+    /**
+     * 当Ordelay 设置的时间> 依赖任务完成的时间时候
+     */
+    private void orDependant2() {
+        Task task1 = getTask("task11");
+        task1.postAsyncDelay(2010);
+        Task task2 = getTask("task22").delayAfter(200, task1);
+        new Task("ordepend") {
+            @Override
+            public void doTask() {
+                // your task
+            }
+        }.dependOn(task1, task2) // not running
+                .orDependOn(R.id.task_3, R.id.task_4) // not running
+                .orDelay(8000) // run after 2000ms
+                .post();
+    }
+
+
 }

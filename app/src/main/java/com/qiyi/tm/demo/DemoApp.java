@@ -7,10 +7,12 @@ import android.util.Log;
 import org.qiyi.basecore.taskmanager.Task;
 import org.qiyi.basecore.taskmanager.TaskManager;
 import org.qiyi.basecore.taskmanager.deliver.ITracker;
+import org.qiyi.basecore.taskmanager.iface.ITaskManagerConfig;
 import org.qiyi.basecore.taskmanager.iface.ITaskStateListener;
+import org.qiyi.basecore.taskmanager.other.TMLog;
 
 public class DemoApp extends Application {
-    private static final String TAG = "DemoApp";
+    private static final String TAG = "TM_TaskManager";
 
     @Override
     public void attachBaseContext(Context context) {
@@ -36,6 +38,7 @@ public class DemoApp extends Application {
                 .setDefaultTimeOut(3000)
                 .enableMemoryCleanUp(true)
                 .setIdleTaskOffset(100)
+                .setThreadPoolStrategy(ITaskManagerConfig.STRATEGY_THREAD_GROUP)
                 .initTaskManager(this);
         registerCallback();
     }
@@ -45,17 +48,17 @@ public class DemoApp extends Application {
         return new ITracker() {
             @Override
             public void track(int level, String tag, Object... msg) {
-
+                logMessage(level == TMLog.LOG_E, tag, msg);
             }
 
             @Override
             public void track(Object... messages) {
-
+                logMessage(false, TAG, messages);
             }
 
             @Override
             public void trackCritical(Object... messages) {
-
+                logMessage(true, TAG, messages);
             }
 
             @Override
@@ -71,9 +74,35 @@ public class DemoApp extends Application {
             // set true : so that will crash ,when some unoproperate use
             @Override
             public boolean isDebug() {
+                // return debug mode setting
                 return true;
             }
         };
+    }
+
+    private void logMessage(boolean loge, String tag, Object... msg) {
+        if (msg != null && msg.length > 0) {
+            if (msg.length == 1) {
+                if (loge) {
+                    Log.e(tag, msg[0].toString());
+                } else {
+                    Log.d(tag, msg[0].toString());
+                }
+            } else {
+                StringBuilder builder = new StringBuilder();
+                for (Object o : msg) {
+                    builder.append(o.toString());
+                    builder.append(" ");
+                }
+
+                if (loge) {
+                    Log.e(tag, builder.toString());
+                } else {
+                    Log.d(tag, builder.toString());
+                }
+
+            }
+        }
     }
 
     //optional

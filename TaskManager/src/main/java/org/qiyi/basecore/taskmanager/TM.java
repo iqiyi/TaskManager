@@ -172,7 +172,7 @@ public class TM {
         new RunnableTask(runnable).executeAsyncNow();
     }
 
-    static boolean isFullLogEnabled() {
+    public static boolean isFullLogEnabled() {
         return manager.isFullLogEnabled();
     }
 
