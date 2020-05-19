@@ -6,6 +6,11 @@
 ### 特性
 
 #### 1. 任务分发: 
+* 将任务提交到UI线程或子线程执行。
+* 提交任务按照FIFO 顺序执行。（参考 executeSerial）
+* 将多个子任务组合成并发任务，并发执行。（ParallelTask）
+* 周期性的执行任务。(TickTask)
+* 闲时任务调度 (IdleTask , Task.enableIdleRun)
 
 ![img](art/task_dispatcher.png)
 
