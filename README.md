@@ -7,6 +7,11 @@
 ### Supported Features
 
 #### 1. Task dispatcher: 
+* Dispatch task to UI thread or background thread
+* Dispatch task to run on background thread in FIFO order (behaves like backgroudn thread Handler ).
+* Submit a group of tasks, to run in parallell. (ParallellTask)
+* To run a task periodically. (TickTask)
+* Run task while idle. (Task.enableIdleRun)
 
 ![img](art/task_dispatcher.png)
 
