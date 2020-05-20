@@ -176,5 +176,14 @@ public class TM {
         return manager.isFullLogEnabled();
     }
 
+    /**
+     * 顺序执行任务替代handler
+     */
+    public static void postSerial(Runnable runnable, String groupName){
+        if(runnable != null) {
+            new RunnableTask(runnable).executeSerial(groupName);
+        }
+    }
+
 
 }
