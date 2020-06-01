@@ -223,7 +223,11 @@ public class TaskRecorder {
 
             if (list.size() > 1) {
                 // do sort
-                Collections.sort(list, taskPriorityComparable);
+                try {
+                    Collections.sort(list, taskPriorityComparable);
+                }catch (IllegalArgumentException exeption) {
+                    // do nothing,  temporarily catch this crash before release , fix it in later version
+                }
             }
 
             for (WeakReference<Job> wf : list) {
