@@ -13,8 +13,8 @@ import org.qiyi.basecore.taskmanager.TickTask;
 public class IdleTest extends Test {
     @Override
     public void doTest() {
-//        idleTest();
-        a();
+        idleTest();
+//        a();
     }
 
     /**
@@ -67,6 +67,8 @@ public class IdleTest extends Test {
         }.enableIdleRun().postAsync();
     }
 
+    int var;
+
     private void idleTest() {
 
         getTask("kksksksks(((", 100).enableIdleRun()
@@ -77,11 +79,11 @@ public class IdleTest extends Test {
 
             @Override
             public void onTick(int loopTime) {
-                getTask("IdleTest1", 100).enableIdleRun()
+                getTask("IdleTest" + var++, 100).enableIdleRun()
                         .postUI();
-                getTask("IdleTest2", 100).enableIdleRun()
+                getTask("IdleTest" + var++, 100).enableIdleRun()
                         .postUI();
-                getTask("IdleTest3", 100).enableIdleRun()
+                getTask("IdleTest" + var++, 100).enableIdleRun()
                         .postUI();
 
             }

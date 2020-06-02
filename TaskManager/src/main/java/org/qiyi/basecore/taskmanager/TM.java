@@ -172,8 +172,17 @@ public class TM {
         new RunnableTask(runnable).executeAsyncNow();
     }
 
-    static boolean isFullLogEnabled() {
+    public static boolean isFullLogEnabled() {
         return manager.isFullLogEnabled();
+    }
+
+    /**
+     * 顺序执行任务替代handler
+     */
+    public static void postSerial(Runnable runnable, String groupName){
+        if(runnable != null) {
+            new RunnableTask(runnable).executeSerial(groupName);
+        }
     }
 
 

@@ -13,6 +13,7 @@ import com.qiyi.tm.demo.test.CancelTest;
 import com.qiyi.tm.demo.test.DependantAfterTest;
 import com.qiyi.tm.demo.test.DependantTest;
 import com.qiyi.tm.demo.test.EventTaskTest;
+import com.qiyi.tm.demo.test.GroupThreadPoolTest;
 import com.qiyi.tm.demo.test.IdleTest;
 import com.qiyi.tm.demo.test.MultiSyncTest;
 import com.qiyi.tm.demo.test.NeedSyncTest;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setGravity(Gravity.CENTER);
         textView.setText("TaskManager Demo");
         setContentView(textView);
-        createTest(15).doTest();
+        createTest(16).doTest();
     }
 
     private Test createTest(int id) {
@@ -76,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
                 return new TestSerial();
             case 15:
                 return new TriggerEventTest();
+            case 16:
+                return new GroupThreadPoolTest();
+
             default:
                 return new AsyncTest();
         }

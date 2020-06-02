@@ -34,8 +34,8 @@ public class TaskWrapper implements Runnable, Comparable<TaskWrapper>, RecycleOb
     private static final String TAG = "TM_TaskWrapper";
     private Task mTaskRequest;
     private LinkedList<Task> pendingTasks;
-    int taskPriority;
-    long enqueueTime;
+    private int taskPriority;
+    private long enqueueTime;
     private ITaskExecutor executor;
 
 
@@ -140,6 +140,14 @@ public class TaskWrapper implements Runnable, Comparable<TaskWrapper>, RecycleOb
 
     public int getTaskPriority() {
         return taskPriority;// return default
+    }
+
+    public void updateTaskPriority(int taskPriority){
+        this.taskPriority = taskPriority;
+    }
+
+    public long getTaskEnqueueTime(){
+        return enqueueTime;
     }
 
     public void enqueueMark(int taskPriority) {

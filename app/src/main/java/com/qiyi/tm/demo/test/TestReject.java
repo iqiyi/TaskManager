@@ -32,7 +32,6 @@ public class TestReject extends Test {
             p++;
         }
 
-
         //在提交的最后一个任务完成5s 后，执行
         task.delayAfter(5000, t).postAsync();
 

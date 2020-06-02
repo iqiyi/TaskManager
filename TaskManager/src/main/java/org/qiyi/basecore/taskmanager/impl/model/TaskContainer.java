@@ -141,13 +141,13 @@ public class TaskContainer implements Container {
 
         }
 
-        Collection<LinkedList<Task>> vars;
+        LinkedList<LinkedList<Task>> lists = new LinkedList<>();
         synchronized (serialMap) {
-            vars = serialMap.values();
+            lists.addAll(serialMap.values());
         }
 
-        if (!vars.isEmpty()) {
-            for (LinkedList<Task> list : vars) {
+        if (!lists.isEmpty()) {
+            for (LinkedList<Task> list : lists) {
                 synchronized (list) {
                     // remove item by token
                     Iterator<Task> iterator = list.iterator();
@@ -183,13 +183,13 @@ public class TaskContainer implements Container {
             }
         }
 
-        Collection<LinkedList<Task>> vars;
+        LinkedList<LinkedList<Task>> lists = new LinkedList<>();
         synchronized (serialMap) {
-            vars = serialMap.values();
+            lists.addAll(serialMap.values());
         }
 
-        if (!vars.isEmpty()) {
-            for (LinkedList<Task> list : vars) {
+        if (!lists.isEmpty()) {
+            for (LinkedList<Task> list : lists) {
                 synchronized (list) {
                     // remove item by token
                     Iterator<Task> iterator = list.iterator();

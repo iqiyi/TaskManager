@@ -13,7 +13,7 @@ import org.qiyi.basecore.taskmanager.other.TMLog;
  * 用于验证并发任务是否会多次执行，绘制没有执行的问题。
  */
 public class ParaTest extends Test implements Test.RunCallback {
-    private final String TAG = "ParaTest";
+    private final String TAG = "TM_ParaTest";
 
     @Override
     public void doTest() {
@@ -21,8 +21,8 @@ public class ParaTest extends Test implements Test.RunCallback {
 
 //        testA();
 //        testParaM();
-//        testPam2();
-        testParam3();
+        testPam2();
+//        testParam3();
 
     }
 
@@ -296,7 +296,7 @@ public class ParaTest extends Test implements Test.RunCallback {
                     .execute();
 
             checker.verriyfy();
-            Log.d("DemoApp ", "DONE ----");
+            Log.d(TAG, "DONE ----");
             getTask(time()).postAsync();
             getTask(200).postAsync();
 

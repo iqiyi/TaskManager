@@ -36,6 +36,7 @@ public class TaskManagerConfig implements ITaskManagerConfig {
     private boolean memoryCleanUpEnabled;
     private boolean enableFullLog;
     private int idleTaskOffset = 50;// for idle task serial run ; ms
+    private int threadPoolStrategy = 0;
 
     public TaskManagerConfig setDefaultTimeOut(int timeOut) {
         defaultTimeOut = timeOut;
@@ -116,6 +117,12 @@ public class TaskManagerConfig implements ITaskManagerConfig {
         return this;
     }
 
+
+    public TaskManagerConfig setThreadPoolStrategy(int strategy){
+        threadPoolStrategy = strategy;
+        return this;
+    }
+
     public int getTaskPriorityGradePerTime() {
         return gradePerRate;
     }
@@ -131,6 +138,10 @@ public class TaskManagerConfig implements ITaskManagerConfig {
 
     public void initTaskManager(Application application) {
         TaskManager.setConfig(application, this);
+    }
+
+    public int getThreadPoolStrategy() {
+        return threadPoolStrategy;
     }
 
 }

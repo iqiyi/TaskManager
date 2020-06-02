@@ -15,8 +15,12 @@
  * limitations under the License.
  *
  */
-package org.qiyi.basecore.taskmanager;
+package org.qiyi.basecore.taskmanager.threadpool;
 
+import org.qiyi.basecore.taskmanager.TM;
+import org.qiyi.basecore.taskmanager.Task;
+import org.qiyi.basecore.taskmanager.TaskManager;
+import org.qiyi.basecore.taskmanager.TaskWrapper;
 import org.qiyi.basecore.taskmanager.deliver.TaskManagerDeliverHelper;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 
@@ -28,7 +32,7 @@ import java.util.PriorityQueue;
 /**
  * 使用动态优先级，如果任务存在的时间越久，那么优先级越高
  */
-class TaskBlockingQueue {
+public class TaskBlockingQueue {
     private final static String TAG = "TM_TaskBlockingQueue";
     private final PriorityQueue<TaskWrapper> highPriorityRejectedQueue = new PriorityQueue<>();
     //store default priority
@@ -38,7 +42,7 @@ class TaskBlockingQueue {
     private int TIME_TO_GRADE = 10; // MAX WAIT (100+ 100 ) * 10 ms
 
 
-    TaskBlockingQueue() {
+    public TaskBlockingQueue() {
         if (TaskManager.getTaskManagerConfig() != null) {
             TIME_TO_GRADE = TaskManager.getTaskManagerConfig().getTaskPriorityGradePerTime();
             if (TIME_TO_GRADE == 0) {
@@ -80,8 +84,8 @@ class TaskBlockingQueue {
         } else if (b == null) {
             return a;
         } else {
-            int var = b.taskPriority - a.taskPriority;
-            int bvar = (int) ((a.enqueueTime - b.enqueueTime) / TIME_TO_GRADE);
+            int var = b.getTaskPriority() - a.getTaskPriority();
+            int bvar = (int) ((a.getTaskEnqueueTime() - b.getTaskEnqueueTime()) / TIME_TO_GRADE);
             if (var + bvar > 0) {
                 return b;
             } else {
@@ -145,7 +149,7 @@ class TaskBlockingQueue {
                 }
             }
             if (foundRequest != null) {
-                foundRequest.taskPriority = Task.TASK_PRIORITY_MAX;
+                foundRequest.updateTaskPriority(Task.TASK_PRIORITY_MAX);
                 if (TM.isFullLogEnabled()) {
                     TMLog.d(TAG, "needTaskAsync Task " + taskId + " has been made a hight priority");
                 }

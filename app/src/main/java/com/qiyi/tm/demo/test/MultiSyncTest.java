@@ -18,11 +18,11 @@ public class MultiSyncTest extends Test {
 
     @Override
     public void doTest() {
-//        testTaskSync();
+        testTaskSync();
 //        testEventSync();
 //        testPara();
 //        testParaM();
-        tsetSyncUIHybride();
+//        tsetSyncUIHybride();
     }
 
 

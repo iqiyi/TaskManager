@@ -18,13 +18,13 @@ public class TestExecuteNow extends Test implements Test.RunCallback {
             }
         };
         int p = 0;
-        while (p < 200) {
+        while (p < 100) {
             if (p % 40 == 0) {
+                getTask("green", 100).executeAsyncNow();
+                getTask("green", time()).executeAsyncNow();
                 getTask("green", 1000).executeAsyncNow();
-                getTask("green", 1000).executeAsyncNow();
-                getTask("green", 1000).executeAsyncNow();
-                getTask("green", 1000).executeAsyncNow();
-                getTask("green", 1000).executeAsyncNow();
+                getTask("green", 10).executeAsyncNow();
+                getTask("green", time()).executeAsyncNow();
             }
             getTask("Normal-" + p, 20 + time(), this).setCallBackOnFinished(result).postAsync();
             p++;

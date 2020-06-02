@@ -1,5 +1,6 @@
 package org.qiyi.basecore.taskmanager.other;
 
+import android.os.Handler;
 import android.os.Looper;
 import android.os.MessageQueue;
 
@@ -9,7 +10,16 @@ import org.qiyi.basecore.taskmanager.TaskManager;
 
 public class IdleScheduler {
     private int count;
-    IdleHandler handler;
+    private IdleHandler handler;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    private Runnable pingUIRunnable = new Runnable(){
+
+        @Override
+        public void run() {
+            // do nothing
+        }
+    };
+
 
     public void increase() {
         synchronized (this) {
@@ -46,6 +56,9 @@ public class IdleScheduler {
                 handler = null;
             }
         }
+        //fix UI thread idle need UI action to trigger up
+        mainHandler.post(pingUIRunnable);
+
 
     }
 
