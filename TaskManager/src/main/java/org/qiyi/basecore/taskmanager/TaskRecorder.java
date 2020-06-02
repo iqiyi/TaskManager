@@ -75,19 +75,16 @@ public class TaskRecorder {
     private static LinkedList<EventTask> eventList = new LinkedList<>();
 
 
-    private static Comparator<WeakReference<Job>> taskPriorityComparable = new Comparator<WeakReference<Job>>() {
+    private static Comparator<Job> taskPriorityComparable = new Comparator<Job>() {
 
         @Override
-        public int compare(WeakReference<Job> o1, WeakReference<Job> o2) {
+        public int compare(Job o1, Job o2) {
             return getPriority(o2) - getPriority(o1);
         }
 
-        private int getPriority(WeakReference<Job> wk) {
-            if (wk != null) {
-                Job task = wk.get();
-                if (task != null) {
-                    return task.getTaskPriority();
-                }
+        private int getPriority(Job task) {
+            if (task != null) {
+                return task.getTaskPriority();
             }
             return 0;
         }
@@ -184,7 +181,7 @@ public class TaskRecorder {
      */
     private static void notifyTaskFinished(@Nullable Task finishedTask, int taskID, @Nullable Object data) {
 
-        LinkedList<WeakReference<Job>> list = new LinkedList<>();
+        LinkedList<Job> list = new LinkedList<>();
         LinkedList<WeakReference<Job>> link;
         synchronized (successorMap) {
             link = successorMap.get(taskID);
@@ -196,7 +193,12 @@ public class TaskRecorder {
             // this warning is checked; use the refed object to lock
             synchronized (link) {
                 if (!link.isEmpty()) {
-                    list.addAll(link);
+                    for (WeakReference<Job> wk : link) {
+                        Job job = wk.get();
+                        if (job != null) {
+                            list.add(job);
+                        }
+                    }
                 }
             }
         }
@@ -205,14 +207,19 @@ public class TaskRecorder {
         synchronized (successorEventMap) {
             LinkedList<WeakReference<Job>> eventList = successorEventMap.get(taskID);
             if (eventList != null && !eventList.isEmpty()) {
-                list.addAll(eventList);
+                for (WeakReference<Job> wk : eventList) {
+                    Job job = wk.get();
+                    if (job != null) {
+                        list.add(job);
+                    }
+                }
             }
         }
         handleSuccesors(list, finishedTask, taskID, data);
     }
 
 
-    final static void handleSuccesors(LinkedList<WeakReference<Job>> list, @Nullable Task finishedTask, int taskID, @Nullable Object data) {
+    final static void handleSuccesors(LinkedList<Job> list, @Nullable Task finishedTask, int taskID, @Nullable Object data) {
         LinkedList<Task> pendingTasks = null;
         LinkedList<Task> pendingUITasks = null;
         boolean isFullLogEnabled = TM.isFullLogEnabled();
@@ -223,16 +230,10 @@ public class TaskRecorder {
 
             if (list.size() > 1) {
                 // do sort
-                try {
-                    Collections.sort(list, taskPriorityComparable);
-                }catch (IllegalArgumentException exeption) {
-                    // do nothing,  temporarily catch this crash before release , fix it in later version
-                }
+                Collections.sort(list, taskPriorityComparable);
             }
-
-            for (WeakReference<Job> wf : list) {
+            for (Job succesor : list) {
                 Task request = null;
-                Job succesor = wf.get();
                 if (succesor != null) {
                     if (finishedTask != null) {
                         succesor.copyData(finishedTask);

@@ -148,9 +148,9 @@ public abstract class Task extends Job {
             if (subs == null) {
                 TaskRecorder.onTaskFinished(this, taskId);
             } else if (!subs.isEmpty()) {
-                LinkedList<WeakReference<Job>> list = new LinkedList<>();
+                LinkedList<Job> list = new LinkedList<>();
                 for (Task task : successors) {
-                    list.add(new WeakReference<Job>(task));
+                    list.add(task);
                 }
                 TaskRecorder.handleSuccesors(list, this, getTaskId(), null);
             }
