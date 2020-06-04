@@ -18,9 +18,6 @@
 package org.qiyi.basecore.taskmanager.deliver;
 
 import java.util.UUID;
-
-import javax.sql.StatementEvent;
-
 /**
  * for some historical reason : this class is used to trace some very important logs
  * during TM running. These logs are kept in buffer , add will deliver to the cloud under
