@@ -703,12 +703,26 @@ public abstract class Task extends Job {
     }
 
 
+    @Deprecated
+    /**
+     * use to @postSerial instead.
+     */
     public void executeSerial(String groupName) {
-        executeSerialDelay(groupName, 0);
+        postSerialDelay(groupName, 0);
     }
 
+    public void postSerial(String groupName) {
+        postSerialDelay(groupName, 0);
+    }
 
-    public void executeSerialDelay(String groupName, int delay) {
+    /**
+     * use to @postSerial instead.
+     */
+    @Deprecated
+    public void executeSerialDelay(String groupName, int delay){
+        postSerialDelay(groupName, delay);
+    }
+    public void postSerialDelay(String groupName, int delay) {
         checktOrDelay(delay);
         if (taskState == STATE_IDLE) {
             if (groupName == null || groupName.length() == 0) {

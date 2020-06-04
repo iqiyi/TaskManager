@@ -181,7 +181,7 @@ public class TM {
      */
     public static void postSerial(Runnable runnable, String groupName){
         if(runnable != null) {
-            new RunnableTask(runnable).executeSerial(groupName);
+            new RunnableTask(runnable).postSerial(groupName);
         }
     }
 

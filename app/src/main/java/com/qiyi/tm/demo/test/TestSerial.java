@@ -45,7 +45,7 @@ public class TestSerial extends Test {
 
         int p = 0;
         while (p < 60) {
-            getTask("t-" + p, time()).executeSerial(groupName);
+            getTask("t-" + p, time()).postSerial(groupName);
             p++;
         }
     }
