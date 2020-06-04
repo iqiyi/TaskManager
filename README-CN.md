@@ -5,7 +5,20 @@
 
 ### 特性
 
+还在到处new Handler 来提交任务？使用TM吧。 
+
+```Java
+   TM.postAsync(Runnable); // 提交任务到子线程
+   TM.postAsyncDelay(Runnable);
+   TM.postUI(Runnable); // 提交任务到主线程执行.
+   TM.postUIDelay(Runnable, int delay);
+   TM.postSerial(Runnable  , String groupName);//相同组名任务，按顺序执行。
+   TM.cancelTaskByToken(Object);// 取消相同token 的任务。
+
+```
+
 #### 1. 任务分发: 
+
 * 将任务提交到UI线程或子线程执行。
 * 提交任务按照FIFO 顺序执行。（参考 executeSerial）
 * 将多个子任务组合成并发任务，并发执行。（ParallelTask）
@@ -38,7 +51,7 @@ add dependencies in your "build.gradle" file
 
 ``` Java
 dependencies {
-    implementation 'com.iqiyi.taskmanager:taskmanager:1.3.5'
+    implementation 'com.iqiyi.taskmanager:taskmanager:1.3.7'
 }
 ```
 

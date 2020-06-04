@@ -6,6 +6,16 @@
 
 ### Supported Features
 
+```Java
+   TM.postAsync(Runnable); // run on background thread
+   TM.postAsyncDelay(Runnable);
+   TM.postUI(Runnable); // run on UI thread
+   TM.postUIDelay(Runnable, int delay);
+   TM.postSerial(Runnable  , String groupName);//tasks with same group name , runs in FIFO order.
+   TM.cancelTaskByToken(Object);// cancel tasks with same token.
+
+```
+
 #### 1. Task dispatcher: 
 * Dispatch task to UI thread or background thread
 * Dispatch task to run on background thread in FIFO order (behaves like background thread Handler ).
@@ -42,7 +52,7 @@ add dependencies in your "build.gradle" file
 
 ``` Java
 dependencies {
-    implementation 'com.iqiyi.taskmanager:taskmanager:1.3.5'
+    implementation 'com.iqiyi.taskmanager:taskmanager:1.3.7'
 }
 ```
 
