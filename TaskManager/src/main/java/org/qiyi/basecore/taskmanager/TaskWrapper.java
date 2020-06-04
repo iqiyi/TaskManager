@@ -19,6 +19,7 @@ package org.qiyi.basecore.taskmanager;
 
 import android.os.Looper;
 
+import org.qiyi.basecore.taskmanager.deliver.TaskManagerDeliverHelper;
 import org.qiyi.basecore.taskmanager.iface.ITaskExecutor;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
@@ -63,7 +64,15 @@ public class TaskWrapper implements Runnable, Comparable<TaskWrapper>, RecycleOb
             if (stateCheck < 0) {
                 task.setWrapper(this);
                 task.doBeforeTask();
-                task.doTask();
+                try {
+                    task.doTask();
+                } catch (Throwable t) {
+                    if( !task.isSafeModeEnabled()) {
+                        throw t;
+                    }
+                    TaskManagerDeliverHelper.trackCritical(t);
+                }
+
                 task.doAfterTask();
 
             } else {
@@ -142,11 +151,11 @@ public class TaskWrapper implements Runnable, Comparable<TaskWrapper>, RecycleOb
         return taskPriority;// return default
     }
 
-    public void updateTaskPriority(int taskPriority){
+    public void updateTaskPriority(int taskPriority) {
         this.taskPriority = taskPriority;
     }
 
-    public long getTaskEnqueueTime(){
+    public long getTaskEnqueueTime() {
         return enqueueTime;
     }
 

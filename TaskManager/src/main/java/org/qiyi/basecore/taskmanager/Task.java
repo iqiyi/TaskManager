@@ -73,6 +73,7 @@ public abstract class Task extends Job {
      * Idle Run : 0x1
      * dependency run : 0x1<<2
      * OrDelay: 0x1<<3
+     * Safe mode : 0x1<<4 :  will not crash
      */
     private int flag = 0;
 
@@ -878,6 +879,16 @@ public abstract class Task extends Job {
         TM.crashIf(this.resultCallback != null && this.resultCallback != resultCallback, "task result might be overridden " + getName());
         this.resultCallback = resultCallback;
         return this;
+    }
+
+
+    public Task enableSafeMode() {
+        flag |= (0x1 << 4);
+        return this;
+    }
+
+    public boolean isSafeModeEnabled() {
+        return (flag & (0x1 << 4)) > 0;
     }
 
     public abstract static class TaskResultCallback {
