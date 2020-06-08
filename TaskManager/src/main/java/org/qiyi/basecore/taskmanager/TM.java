@@ -23,6 +23,7 @@ import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
 import org.qiyi.basecore.taskmanager.struct.DataMaker;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TM {
@@ -31,6 +32,7 @@ public class TM {
     private static TaskManager manager = TaskManager.getInstance();
     private static AtomicInteger eventId = new AtomicInteger(Task.TASKID_EVENT_RANGE);
     private static AtomicInteger groupId = new AtomicInteger(1);
+    private static TMExecutor executor = new TMExecutor();
 
     public static void cancelTaskByToken(Object token) {
         manager.cancelTaskByToken(token);
@@ -185,5 +187,8 @@ public class TM {
         }
     }
 
+    public static Executor getExecutor(){
+        return executor;
+    }
 
 }
