@@ -72,8 +72,12 @@ public final class ThreadGroupStrategy implements IThreadStrategy, IThreadIdleCa
     @Override
     public void trigger() {
         // wake up some thread to check task to run
-        normalQueue.notify();
-        highQueue.notify();
+        synchronized (normalQueue) {
+            normalQueue.notify();
+        }
+        synchronized (highQueue) {
+            highQueue.notify();
+        }
     }
 
     @Override // not supported right now
