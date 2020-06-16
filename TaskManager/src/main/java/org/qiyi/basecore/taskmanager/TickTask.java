@@ -183,7 +183,7 @@ public abstract class TickTask implements Runnable, ITask {
 
     /**
      * 计算出间隔时间
-     *
+     * Custom classes can override this method , to arrange for next task execute time.
      * @return
      */
     protected int figureInterval(int times, int interval) {

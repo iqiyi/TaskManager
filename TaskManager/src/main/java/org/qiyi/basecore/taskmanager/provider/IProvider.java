@@ -18,9 +18,12 @@
 package org.qiyi.basecore.taskmanager.provider;
 
 public interface IProvider {
-    public <T> T query(int id, Class<T> target, Object... msg);
+    <T> T query(int id, Class<T> target, Object... msg);
 
-    public void observe(DataProvider.DataNotifier notifier, Object token, int... ids);
+    void observe(DataProvider.DataNotifier notifier, Object token, int... ids);
 
-    public void unObserve(Object token, int... ids);
+    void unObserve(Object token, int... ids);
+
+    void dispatch(int id, Object... data);
+
 }

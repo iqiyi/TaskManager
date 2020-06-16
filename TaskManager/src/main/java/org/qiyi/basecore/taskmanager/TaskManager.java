@@ -96,6 +96,10 @@ public class TaskManager {
     }
 
 
+    /**
+     * execute all tasks in current thread , except  that a task is declared to run on UI thread, but current thread is background thread.
+     * @param baseTaskList
+     */
     public void executeDirect(@NonNull List<? extends Task> baseTaskList) {
         if (baseTaskList.size() > 0) {
             for (Task task : baseTaskList) {
@@ -106,7 +110,7 @@ public class TaskManager {
 
     /**
      * 直接执行任务:
-     *
+     *  refer to executeDirect(List)
      * @param baseTask
      */
     public void executeDirect(@NonNull Task baseTask) {
@@ -161,7 +165,6 @@ public class TaskManager {
      * 当前线程执行时序依赖的任务
      * 如果被依赖的任务没有完成，将等待任务执行完成或者直接执行任务
      * 不会等待没有添加的任务去执行
-     *
      * @param taskId
      */
     public void needTaskSync(int taskId) {
@@ -172,7 +175,6 @@ public class TaskManager {
     /**
      * 当前线程执行时序依赖的任务
      * 如果被依赖的任务没有完成，将等待任务执行完成或者直接执行任务
-     *
      * @param taskId
      * @param timeOutMillions : 设置超时的时间，if < 0 : 将会一直等待。
      */
@@ -426,6 +428,14 @@ public class TaskManager {
         return mConfig;
     }
 
+    /**
+     * to check if a task has been posted to TM.
+     * this will check in TaskContainer(pending task )  & task recorder.
+     * if a task is a anonymous id task (TM.generated id ), and if the task is already finished ,
+     * this function will return false. (As we don't save record for such tasks)
+     * @param taskId
+     * @return
+     */
     public boolean isTaskRegistered(int taskId) {
         return mSchedulerManager.isTaskRegistered(taskId);
     }
@@ -435,6 +445,10 @@ public class TaskManager {
         return mTaskExecutor.getCpuCount();
     }
 
+    /**
+     * not fully tested.
+     * @param size
+     */
     public void setMaxRunningThreadCount(int size) {
         mTaskExecutor.setMaxRunningThreadCount(size);
     }
@@ -444,7 +458,7 @@ public class TaskManager {
      *
      * @param taskRequest
      */
-    public void quickRun(Task taskRequest) {
+    void quickRun(Task taskRequest) {
         if (TMLog.isDebug() && taskRequest.hasDependantTasks() || taskRequest.getDelayTime() != 0) {
             throw new IllegalStateException("call <enqueue> instead as u have dependant task or time delay");
         }

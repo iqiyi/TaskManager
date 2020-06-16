@@ -221,16 +221,15 @@ public abstract class Task extends Job {
 
 
     // call super for chain invoke
-
     @Override
-    public Task setGroup(Object gid) {
-        super.setGroup(gid);
+    public Task setGroupObject(Object gid) {
+        super.setGroupObject(gid);
         return this;
     }
 
     @Override
-    public Task setGroup(int gid) {
-        super.setGroup(gid);
+    public Task setGroupId(short gid) {
+        super.setGroupId(gid);
         return this;
     }
 

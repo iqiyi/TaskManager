@@ -3,6 +3,9 @@ package org.qiyi.basecore.taskmanager.threadpool;
 import org.qiyi.basecore.taskmanager.iface.ITaskExecutor;
 import org.qiyi.basecore.taskmanager.iface.ITaskManagerConfig;
 
+/**
+ * this should be removed, if GroupedThreadPool is fully tested.
+ */
 public class ThreadPoolFactory {
     public static ITaskExecutor createExecutor(int strategy) {
         if (strategy == ITaskManagerConfig.STRATEGY_POOL_EXECUTOR) {

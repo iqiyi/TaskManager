@@ -18,5 +18,5 @@
 package org.qiyi.basecore.taskmanager.pool;
 
 public interface RecycleObject {
-    public void recycle();
+    void recycle();
 }

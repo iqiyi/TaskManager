@@ -25,6 +25,11 @@ import org.qiyi.basecore.taskmanager.iface.IException;
 import org.qiyi.basecore.taskmanager.iface.ITaskManagerConfig;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
 
+/**
+ * A class to config TaskManager :
+ * Call TaskManager.config().initTaskManager(Application app) to config TaskManager.
+ * Else TaskManager will config by default values;
+ */
 public class TaskManagerConfig implements ITaskManagerConfig {
 
     private boolean enableDebugCrash;

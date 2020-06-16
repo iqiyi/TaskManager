@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         textView.setGravity(Gravity.CENTER);
         textView.setText("TaskManager Demo");
         setContentView(textView);
-        createTest(16).doTest();
+        createTest(5).doTest();
+
     }
 
     private Test createTest(int id) {

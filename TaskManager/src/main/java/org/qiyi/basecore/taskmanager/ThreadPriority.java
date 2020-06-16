@@ -21,6 +21,6 @@ public class ThreadPriority {
     public static int MAX = 10;
     public static int NORMAL = 5;
     public static int MIN = 1;
-    //不指定优先级
+    //不指定优先级: used in parallel task.
     public static int FLEXIBLE = 7;
 }
