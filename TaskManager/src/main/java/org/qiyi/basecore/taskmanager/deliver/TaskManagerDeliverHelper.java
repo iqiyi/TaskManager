@@ -18,7 +18,6 @@
 package org.qiyi.basecore.taskmanager.deliver;
 
 import java.util.UUID;
-
 /**
  * for some historical reason : this class is used to trace some very important logs
  * during TM running. These logs are kept in buffer , add will deliver to the cloud under
@@ -58,6 +57,23 @@ public class TaskManagerDeliverHelper {
     public static void deliver(int type) {
         if (logTracker != null) {
             logTracker.deliver(type);
+        }
+    }
+
+    public static void trackCritical(Throwable t) {
+        if(t != null && logTracker != null) {
+            logTracker.trackCritical(t.getMessage());
+            StackTraceElement elements[] = t.getStackTrace();
+            if(elements != null) {
+                int maxLine = 12;
+                int size = elements.length > maxLine ? maxLine: elements.length;
+                int p =0;
+                while (p < size) {
+                    StackTraceElement element = elements[p];
+                    logTracker.trackCritical(element.toString());
+                    p++;
+                }
+            }
         }
     }
 

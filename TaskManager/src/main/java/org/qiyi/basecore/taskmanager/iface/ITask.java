@@ -18,9 +18,9 @@
 package org.qiyi.basecore.taskmanager.iface;
 
 public interface ITask {
-    public void post();
+    void post();
 
-    public void postUI();
+    void postUI();
 
-    public void postAsync();
+    void postAsync();
 }

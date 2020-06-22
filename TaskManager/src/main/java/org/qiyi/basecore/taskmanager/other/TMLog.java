@@ -17,10 +17,7 @@
  */
 package org.qiyi.basecore.taskmanager.other;
 
-import android.util.Log;
-
 import org.qiyi.basecore.taskmanager.deliver.ITracker;
-import org.qiyi.basecore.taskmanager.iface.ILog;
 
 public class TMLog {
     static ITracker loger;

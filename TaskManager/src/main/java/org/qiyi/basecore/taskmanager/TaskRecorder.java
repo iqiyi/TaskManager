@@ -74,20 +74,16 @@ public class TaskRecorder {
     private static SparseIntArray groupObjectIdMap = new SparseIntArray();
     private static LinkedList<EventTask> eventList = new LinkedList<>();
 
-
-    private static Comparator<WeakReference<Job>> taskPriorityComparable = new Comparator<WeakReference<Job>>() {
+    private static Comparator<Job> taskPriorityComparable = new Comparator<Job>() {
 
         @Override
-        public int compare(WeakReference<Job> o1, WeakReference<Job> o2) {
+        public int compare(Job o1, Job o2) {
             return getPriority(o2) - getPriority(o1);
         }
 
-        private int getPriority(WeakReference<Job> wk) {
-            if (wk != null) {
-                Job task = wk.get();
-                if (task != null) {
-                    return task.getTaskPriority();
-                }
+        private int getPriority(Job task) {
+            if (task != null) {
+                return task.getTaskPriority();
             }
             return 0;
         }
@@ -184,7 +180,7 @@ public class TaskRecorder {
      */
     private static void notifyTaskFinished(@Nullable Task finishedTask, int taskID, @Nullable Object data) {
 
-        LinkedList<WeakReference<Job>> list = new LinkedList<>();
+        LinkedList<Job> list = new LinkedList<>();
         LinkedList<WeakReference<Job>> link;
         synchronized (successorMap) {
             link = successorMap.get(taskID);
@@ -196,7 +192,12 @@ public class TaskRecorder {
             // this warning is checked; use the refed object to lock
             synchronized (link) {
                 if (!link.isEmpty()) {
-                    list.addAll(link);
+                    for (WeakReference<Job> wk : link) {
+                        Job job = wk.get();
+                        if (job != null) {
+                            list.add(job);
+                        }
+                    }
                 }
             }
         }
@@ -205,14 +206,19 @@ public class TaskRecorder {
         synchronized (successorEventMap) {
             LinkedList<WeakReference<Job>> eventList = successorEventMap.get(taskID);
             if (eventList != null && !eventList.isEmpty()) {
-                list.addAll(eventList);
+                for (WeakReference<Job> wk : eventList) {
+                    Job job = wk.get();
+                    if (job != null) {
+                        list.add(job);
+                    }
+                }
             }
         }
         handleSuccesors(list, finishedTask, taskID, data);
     }
 
 
-    final static void handleSuccesors(LinkedList<WeakReference<Job>> list, @Nullable Task finishedTask, int taskID, @Nullable Object data) {
+    final static void handleSuccesors(LinkedList<Job> list, @Nullable Task finishedTask, int taskID, @Nullable Object data) {
         LinkedList<Task> pendingTasks = null;
         LinkedList<Task> pendingUITasks = null;
         boolean isFullLogEnabled = TM.isFullLogEnabled();
@@ -223,16 +229,10 @@ public class TaskRecorder {
 
             if (list.size() > 1) {
                 // do sort
-                try {
-                    Collections.sort(list, taskPriorityComparable);
-                }catch (IllegalArgumentException exeption) {
-                    // do nothing,  temporarily catch this crash before release , fix it in later version
-                }
+                Collections.sort(list, taskPriorityComparable);
             }
-
-            for (WeakReference<Job> wf : list) {
+            for (Job succesor : list) {
                 Task request = null;
-                Job succesor = wf.get();
                 if (succesor != null) {
                     if (finishedTask != null) {
                         succesor.copyData(finishedTask);
@@ -328,7 +328,7 @@ public class TaskRecorder {
      * @param successor
      * @param taskId
      */
-    public static void addEventSuccessForTask(@NonNull Job successor, int taskId) {
+    static void addEventSuccessForTask(@NonNull Job successor, int taskId) {
 
         synchronized (successorEventMap) {
             LinkedList<WeakReference<Job>> list = successorEventMap.get(taskId);
@@ -352,7 +352,7 @@ public class TaskRecorder {
         }
     }
 
-    public static boolean removeEventSuccessorForTask(@NonNull Job successor, int taskId) {
+    static boolean removeEventSuccessorForTask(@NonNull Job successor, int taskId) {
         synchronized (successorEventMap) {
             LinkedList<WeakReference<Job>> list = successorEventMap.get(taskId);
             if (list != null && !list.isEmpty()) {
@@ -371,7 +371,7 @@ public class TaskRecorder {
     }
 
 
-    public static void removeEventSuccessorForTask(int eventTaskId, int[] taskIds) {
+    static void removeEventSuccessorForTask(int eventTaskId, int[] taskIds) {
         if (taskIds == null || taskIds.length == 0) {
             return;
         }
@@ -398,7 +398,7 @@ public class TaskRecorder {
      * if task is not finished , add task successor;
      * Or else task will run right now
      */
-    public static void addSuccessorForTask(@NonNull Job successor, int taskId) {
+    static void addSuccessorForTask(@NonNull Job successor, int taskId) {
         arrayReadLock.lock();
         int index;
         try {// if this event has already finished
@@ -437,7 +437,6 @@ public class TaskRecorder {
 
     /**
      * its possible that: the task is finished , and is waiting for the lock to write state. and we returned false;
-     *
      * @param taskId
      * @return
      */
@@ -453,7 +452,6 @@ public class TaskRecorder {
 
     /**
      * used for a quick access of task states
-     *
      * @param taskId
      * @return
      */
@@ -464,7 +462,6 @@ public class TaskRecorder {
     /**
      * if some task is not finished , return false
      * no sync ; not important
-     *
      * @return
      */
     public static boolean isAllTaskFinished(int[] ids) {
@@ -613,7 +610,10 @@ public class TaskRecorder {
     }
 
 
-    // remove task recode
+    /**
+     *   remove task recode;
+     *   if a task record is removed.  The tasks which are depended on this task , will again wait this task to finish.
+      */
     public static void deleteRecode(int... ids) {
         arrayWriteLock.lock();
         try {
@@ -626,6 +626,11 @@ public class TaskRecorder {
     }
 
 
+    /**
+     *
+     * @param ids : call deleteRecords instead
+     */
+    @Deprecated
     public static void removeTasks(LinkedList<Integer> ids) {
         arrayWriteLock.lock();
         try {
@@ -635,10 +640,28 @@ public class TaskRecorder {
         } finally {
             arrayWriteLock.unlock();
         }
+    }
 
+    /**
+     * records
+     * @param ids
+     */
+    public static void deleteRecords(LinkedList<Integer> ids) {
+        arrayWriteLock.lock();
+        try {
+            for (int i : ids) {
+                array.delete(i);
+            }
+        } finally {
+            arrayWriteLock.unlock();
+        }
     }
 
 
+    /**
+     * unbind task with activity context
+     * @param context
+     */
     public static void unbindTasks(Context context) {
 
         if (context != null) {
@@ -757,7 +780,7 @@ public class TaskRecorder {
                     TM.cancelTaskById(taskId);
                 }
                 // remove the record of this task
-                TaskRecorder.removeTasks(list);
+                TaskRecorder.deleteRecords(list);
                 TaskRecorder.unbindEventTask(list);
             }
         }
@@ -871,15 +894,22 @@ public class TaskRecorder {
         }
     }
 
-    public static int generateGroupId(Object groupIdentity) {
+    /**
+     * As we will use this group id to figure out custom event id :
+     * See : TM.genEventIdbyGroup
+     * so we cant set identityHashCode as group id;
+     * @param groupIdentity
+     * @return
+     */
+    public static short generateGroupId(Object groupIdentity) {
         int groupIdKey = System.identityHashCode(groupIdentity);
         synchronized (groupObjectIdMap) {
-            int var = groupObjectIdMap.get(groupIdKey);
+            short var = (short) groupObjectIdMap.get(groupIdKey);
             if (var > 0) {
                 return var;
             }
         }
-        int var = TM.genGroupId();
+        short var = TM.genGroupId();
         synchronized (groupObjectIdMap) {
             groupObjectIdMap.put(groupIdKey, var);
         }

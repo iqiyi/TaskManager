@@ -32,6 +32,7 @@ import java.util.List;
 
 /**
  * 这个容器只是用来保存等待执行的，等待条件执行的任务
+ * A vessel to hold all pending tasks to run;
  */
 public class TaskContainer implements Container {
     private static final String TAG = "TManager_TaskContainer";

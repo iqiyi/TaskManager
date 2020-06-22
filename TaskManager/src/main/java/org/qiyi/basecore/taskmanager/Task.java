@@ -73,6 +73,7 @@ public abstract class Task extends Job {
      * Idle Run : 0x1
      * dependency run : 0x1<<2
      * OrDelay: 0x1<<3
+     * Safe mode : 0x1<<4 :  will not crash
      */
     private int flag = 0;
 
@@ -148,9 +149,9 @@ public abstract class Task extends Job {
             if (subs == null) {
                 TaskRecorder.onTaskFinished(this, taskId);
             } else if (!subs.isEmpty()) {
-                LinkedList<WeakReference<Job>> list = new LinkedList<>();
+                LinkedList<Job> list = new LinkedList<>();
                 for (Task task : successors) {
-                    list.add(new WeakReference<Job>(task));
+                    list.add(task);
                 }
                 TaskRecorder.handleSuccesors(list, this, getTaskId(), null);
             }
@@ -220,16 +221,15 @@ public abstract class Task extends Job {
 
 
     // call super for chain invoke
-
     @Override
-    public Task setGroup(Object gid) {
-        super.setGroup(gid);
+    public Task setGroupObject(Object gid) {
+        super.setGroupObject(gid);
         return this;
     }
 
     @Override
-    public Task setGroup(int gid) {
-        super.setGroup(gid);
+    public Task setGroupId(short gid) {
+        super.setGroupId(gid);
         return this;
     }
 
@@ -702,12 +702,26 @@ public abstract class Task extends Job {
     }
 
 
+    @Deprecated
+    /**
+     * use to @postSerial instead.
+     */
     public void executeSerial(String groupName) {
-        executeSerialDelay(groupName, 0);
+        postSerialDelay(groupName, 0);
     }
 
+    public void postSerial(String groupName) {
+        postSerialDelay(groupName, 0);
+    }
 
-    public void executeSerialDelay(String groupName, int delay) {
+    /**
+     * use to @postSerial instead.
+     */
+    @Deprecated
+    public void executeSerialDelay(String groupName, int delay){
+        postSerialDelay(groupName, delay);
+    }
+    public void postSerialDelay(String groupName, int delay) {
         checktOrDelay(delay);
         if (taskState == STATE_IDLE) {
             if (groupName == null || groupName.length() == 0) {
@@ -878,6 +892,16 @@ public abstract class Task extends Job {
         TM.crashIf(this.resultCallback != null && this.resultCallback != resultCallback, "task result might be overridden " + getName());
         this.resultCallback = resultCallback;
         return this;
+    }
+
+
+    public Task enableSafeMode() {
+        flag |= (0x1 << 4);
+        return this;
+    }
+
+    public boolean isSafeModeEnabled() {
+        return (flag & (0x1 << 4)) > 0;
     }
 
     public abstract static class TaskResultCallback {

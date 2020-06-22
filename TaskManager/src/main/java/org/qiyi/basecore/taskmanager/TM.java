@@ -23,6 +23,7 @@ import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
 import org.qiyi.basecore.taskmanager.struct.DataMaker;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TM {
@@ -31,6 +32,8 @@ public class TM {
     private static TaskManager manager = TaskManager.getInstance();
     private static AtomicInteger eventId = new AtomicInteger(Task.TASKID_EVENT_RANGE);
     private static AtomicInteger groupId = new AtomicInteger(1);
+    private static TMExecutor executor = new TMExecutor();
+    static final int GROUP_ID_RANGE = 0x1 << 12;
 
     public static void cancelTaskByToken(Object token) {
         manager.cancelTaskByToken(token);
@@ -112,9 +115,9 @@ public class TM {
         return new DataMaker();
     }
 
-    public static int genGroupId() {
+    public static short genGroupId() {
         // group ID 总共支持 0~ 0xfff;
-        return groupId.incrementAndGet();
+        return (short) groupId.incrementAndGet();
     }
 
     public static int genGroupId(Object groupIdentity) {
@@ -181,9 +184,12 @@ public class TM {
      */
     public static void postSerial(Runnable runnable, String groupName){
         if(runnable != null) {
-            new RunnableTask(runnable).executeSerial(groupName);
+            new RunnableTask(runnable).postSerial(groupName);
         }
     }
 
+    public static Executor getExecutor(){
+        return executor;
+    }
 
 }

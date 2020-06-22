@@ -19,6 +19,10 @@ package org.qiyi.basecore.taskmanager.provider;
 
 import java.util.TreeMap;
 
+/**
+ * Default implementation of data provider;
+ * Kept as singleton. Used for put & get data Application wide.
+ */
 final class DefaultProvider extends DataProvider {
 
     private static DefaultProvider provider = new DefaultProvider();

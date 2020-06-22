@@ -24,7 +24,6 @@ import org.qiyi.basecore.taskmanager.iface.ITaskExecutor;
 import org.qiyi.basecore.taskmanager.impl.model.TaskContainer;
 import org.qiyi.basecore.taskmanager.other.IdleScheduler;
 import org.qiyi.basecore.taskmanager.other.TMLog;
-
 import java.util.LinkedList;
 
 class SchedulerManager {
@@ -86,7 +85,6 @@ class SchedulerManager {
 
     /**
      * 直接向调度器增加一个任务
-     *
      * @param taskRequest
      */
     public void schedule(final Task taskRequest) {

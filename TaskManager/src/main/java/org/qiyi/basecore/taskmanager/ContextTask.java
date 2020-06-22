@@ -19,6 +19,9 @@ package org.qiyi.basecore.taskmanager;
 
 import android.content.Context;
 
+/**
+ * A  Task keeps context;
+ */
 public abstract class ContextTask extends Task {
     final protected Context mContext;
 

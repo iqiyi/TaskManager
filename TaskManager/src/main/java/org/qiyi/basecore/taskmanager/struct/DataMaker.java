@@ -19,6 +19,9 @@ package org.qiyi.basecore.taskmanager.struct;
 
 import java.util.HashMap;
 
+/**
+ * used for TM data passing.
+ */
 public class DataMaker {
 
     private HashMap<String, Object> map;
@@ -31,7 +34,6 @@ public class DataMaker {
         map.put(key, value);
         return this;
     }
-
     public HashMap<String, Object> get() {
         return map;
     }

@@ -26,19 +26,18 @@ import java.util.List;
  */
 public interface Container {
 
-    public boolean add(Task taskRequest);
+    boolean add(Task taskRequest);
 
-    public void add(List<? extends Task> taskRequestList);
+    void add(List<? extends Task> taskRequestList);
 
-    //    public TaskRequest findTaskById(String uuid);
-    public boolean contains(Task request);
+    boolean contains(Task request);
 
-    public boolean remove(Task taskRequest);
+    boolean remove(Task taskRequest);
 
-    public int size();
+    int size();
 
-    public void clear();
+    void clear();
 
     //返回地一个因为延迟执行进入队列中的
-    public Task offerTaskInIdleState(boolean isBGTask);
+    Task offerTaskInIdleState(boolean isBGTask);
 }

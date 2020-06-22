@@ -26,7 +26,6 @@ public class ExceptionUtils {
 
     /**
      * 打印异常日志并向APM后台投递业务异常
-     *
      * @param e 异常信息
      */
     public static void printStackTrace(Throwable e) {

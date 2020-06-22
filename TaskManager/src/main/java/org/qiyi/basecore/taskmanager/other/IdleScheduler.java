@@ -7,20 +7,23 @@ import android.os.MessageQueue;
 import org.qiyi.basecore.taskmanager.Task;
 import org.qiyi.basecore.taskmanager.TaskManager;
 
-
+/**
+ * use to handel main thread idle tasks
+ */
 public class IdleScheduler {
     private int count;
     private IdleHandler handler;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private Runnable pingUIRunnable = new Runnable(){
-
         @Override
         public void run() {
             // do nothing
         }
     };
 
-
+    /**
+     * Call when a ui thread idle task is registered
+     */
     public void increase() {
         synchronized (this) {
             count++;
@@ -39,6 +42,9 @@ public class IdleScheduler {
         }
     }
 
+    /**
+     * Call when a ui thread idle task is unregistered
+     */
     public void decrease() {
         synchronized (this) {
             count--;
@@ -58,8 +64,6 @@ public class IdleScheduler {
         }
         //fix UI thread idle need UI action to trigger up
         mainHandler.post(pingUIRunnable);
-
-
     }
 
     class IdleHandler implements MessageQueue.IdleHandler {

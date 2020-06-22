@@ -18,6 +18,7 @@
 package org.qiyi.basecore.taskmanager;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -34,7 +35,7 @@ public abstract class EventTask extends Job {
     public abstract void onEvent(int eventId, Object msg);
 
     /**
-     * @param eventIds : 支持自定义的事件id
+     * @param eventIds : global events ( ids declaired in xml or use TM.genNewEventId)
      * @return
      */
     public EventTask registerEvents(int... eventIds) {
@@ -42,7 +43,6 @@ public abstract class EventTask extends Job {
         if (eventIds == null) {
             return this;
         }
-
         // change event ids
         if (TMLog.isDebug()) {
             for (int i : eventIds) {
@@ -60,6 +60,7 @@ public abstract class EventTask extends Job {
             for (int i = 0; i < len; i++) {
                 // 自定义 event ID 生成  0x X XXX XXXX
                 if (eventIds[i] < Task.TASKID_SELF_DEFINE_EVENT_RANGE) {
+                    TM.crashIf(groupId > TM.GROUP_ID_RANGE, "group id should be < 0xffff");
                     eventIds[i] = TM.genEventIdbyGroup(groupId, eventIds[i]);
                 }
             }
@@ -77,14 +78,8 @@ public abstract class EventTask extends Job {
         return this;
     }
 
-    public EventTask registerGroupedEvents(int groupId, int... eventIds) {
-        setGroup(groupId);
-        registerEvents(eventIds);
-        return this;
-    }
-
     public EventTask registerGroupedEvents(Object groupIdentity, int... eventIds) {
-        setGroup(groupIdentity);
+        setGroupObject(groupIdentity);
         registerEvents(eventIds);
         return this;
     }
@@ -174,8 +169,10 @@ public abstract class EventTask extends Job {
     // call super for chain invoke
 
     @Override
-    public EventTask setGroup(Object gid) {
-        super.setGroup(gid);
+    public EventTask setGroupObject(Object gid) {
+        TM.crashIf(gid instanceof Integer || gid instanceof Long || gid instanceof Short,
+                "please don't use Long , Integer, Short as Group Object identifier ");
+        super.setGroupObject(gid);
         if (eventIds != null && TMLog.isDebug()) {
             throw new IllegalStateException("should call set group before register events");
         }
@@ -183,8 +180,8 @@ public abstract class EventTask extends Job {
     }
 
     @Override
-    public EventTask setGroup(int gid) {
-        super.setGroup(gid);
+    public EventTask setGroupId(short gid) {
+        super.setGroupId(gid);
         if (eventIds != null && TMLog.isDebug()) {
             throw new IllegalStateException("should call set group before register events");
         }

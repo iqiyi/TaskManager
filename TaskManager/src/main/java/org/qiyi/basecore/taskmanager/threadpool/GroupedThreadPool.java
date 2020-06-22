@@ -14,6 +14,10 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.regex.Pattern;
 
+/**
+ * TM new ITaskExecutor implementation;
+ * 'strategy' is left to customize a different thread pool behavior.
+ */
 public class GroupedThreadPool implements ITaskExecutor {
     private static final String TAG = "TM_GroupedThreadPool";
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
@@ -21,8 +25,11 @@ public class GroupedThreadPool implements ITaskExecutor {
     private Handler workHandler;
     private int cupCores;
     private IThreadStrategy strategy;
+    // low priority task will be execute in single thread.
     private volatile Handler workHandlerLowPriority;//低优先级执行队列
+    // high thread priority task will be stored here.
     private ITaskQueue highQueue;
+    // normal thread priority task will be stored here.
     private ITaskQueue normalQueue;
 
 

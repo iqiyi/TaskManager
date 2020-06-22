@@ -3,6 +3,9 @@ package org.qiyi.basecore.taskmanager.threadpool;
 import org.qiyi.basecore.taskmanager.TM;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 
+/**
+ * A working thread , fetching data from pending queue
+ */
 public class TMThread extends Thread {
     private boolean started;
     private ITaskQueue mQueue;

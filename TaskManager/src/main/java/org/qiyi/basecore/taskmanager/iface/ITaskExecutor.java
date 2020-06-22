@@ -23,7 +23,7 @@ import org.qiyi.basecore.taskmanager.Task;
 import org.qiyi.basecore.taskmanager.TaskWrapper;
 
 /**
- * 任务执行类
+ * TaskManager Executor(Thread Pool Interface)
  */
 public interface ITaskExecutor {
 

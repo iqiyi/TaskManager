@@ -18,5 +18,5 @@
 package org.qiyi.basecore.taskmanager.iface;
 
 public interface IPrinter {
-    public void print(String var);
+    void print(String var);
 }

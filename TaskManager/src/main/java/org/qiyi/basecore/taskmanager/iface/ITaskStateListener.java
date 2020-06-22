@@ -20,9 +20,8 @@ package org.qiyi.basecore.taskmanager.iface;
 import org.qiyi.basecore.taskmanager.Task;
 
 public interface ITaskStateListener {
-    public static final int ON_START = 1;
-    public static final int ON_FINISHED = 2;
-    public static final int ON_CANCELED = 3;
-
-    public void onTaskStateChange(Task task, int state);
+    int ON_START = 1;
+    int ON_FINISHED = 2;
+    int ON_CANCELED = 3;
+    void onTaskStateChange(Task task, int state);
 }

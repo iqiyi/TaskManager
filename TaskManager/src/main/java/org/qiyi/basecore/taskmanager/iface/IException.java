@@ -18,5 +18,5 @@
 package org.qiyi.basecore.taskmanager.iface;
 
 public interface IException {
-    public void printStackTrace(Throwable e);
+    void printStackTrace(Throwable e);
 }

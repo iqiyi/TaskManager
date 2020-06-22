@@ -28,7 +28,32 @@ import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * not tested enough
+ *
+ * @ Warning : Need more test!!!
+ * A class used to get data cross modules .
+ * Sample :
+ * Data Provider implementation:
+ * new DataProvider(2){
+ *
+ *             @Override
+ *             protected Object onQuery(int id, Object... msg) {
+ *                 return null;
+ *             }
+ *
+ *             @Override
+ *             protected boolean onDispatch(int id, Object... msg) {
+ *                 return false;
+ *             }
+ *         }.install();
+ *
+ *
+ * User :
+ *  case 1: data dispatch:
+ *         DataProvider.of(1).dispatch(2, data);
+ *  case 2: Data queue:
+ *         DataProvider.of(1).query()
+ *  case 3: Data observer:
+ *         DataProvider.of(1).observe();
  */
 public abstract class DataProvider implements IProvider {
     private int providerId;
@@ -163,8 +188,21 @@ public abstract class DataProvider implements IProvider {
     }
 
 
+    /**
+     * Call by other modules , this provider should return data by the specified id.
+     * @param id
+     * @param msg
+     * @return
+     */
     protected abstract Object onQuery(int id, Object... msg);
 
+    /**
+     * Call by User :  DataProvider.of(id).dispatch(dataId, mgs...):
+     * data will be dispatched first to all observers, the to the data provider.
+     * @param id
+     * @param msg
+     * @return
+     */
     protected abstract boolean onDispatch(int id, Object... msg);
 
     public <T> T query(int id, Class<T> target, Object... msg) {

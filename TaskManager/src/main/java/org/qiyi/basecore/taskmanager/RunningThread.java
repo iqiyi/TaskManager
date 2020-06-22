@@ -47,7 +47,6 @@ public enum RunningThread {
         return (this == UI_THREAD || UI_THREAD_SYNC == this);
     }
 
-
     /**
      * 如果期望在主线程执行，那么当前线程需要是主线程
      *
