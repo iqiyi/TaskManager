@@ -60,6 +60,27 @@ dependencies {
 
 * [API document wiki](https://github.com/iqiyi/TaskManager/wiki)
 
+### TaskAnalyze
++ TaskAnalyze: Please refer to Task Analyze(任务分析) function in Lens.
++ TaskRecode:  See iqiyi/Lens  DataDump Function to check TM task status; You can find running tasks ,finished tasks & task bloking time on DataDump panel.
+```Java
+ LensUtil.setDumper(MyDumpFactory.class);
+```
+```Java
+@Override
+    public ILogDumper create() {
+        return AnnotationLogDumper.create(this)
+        // Dump.class：注解类；
+        //LensApp.getInstance()： 查询注解的单例对象
+        //StaticDump.class:查询带注静态方法的类
+                .add(Dump.class, LensApp.getInstance(), StaticDump.class)
+        //"TM" : 别名
+        //TMDump.class：注解类；
+        // TaskManager.getInstance()：查询注解的单例对象
+                .add("TM",TMDump.class, TaskManager.getInstance(), TaskRecorder.class);
+    }
+```
+
 ###  License
 
 TaskManager is [Apache v2.0 Licensed](https://github.com/iqiyi/Neptune/blob/master/LICENSE).

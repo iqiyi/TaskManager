@@ -55,6 +55,12 @@ dependencies {
 }
 ```
 
+### 任务分析  
+Lens 可支持TM分析功能。
++ 任务分析功能： 见Lens 任务分析功能。支持展示任务运行时间，任务名等等信息。
++ 任务记录：对接Lens data dump 功能，可在data dump 面板中查看任务状态，包含进行中的任务，等待中的任务，已完成的任务以及任务阻塞时间等等。
+
+
 ###  开发指南
 
 * [API document wiki](https://github.com/iqiyi/TaskManager/wiki)
