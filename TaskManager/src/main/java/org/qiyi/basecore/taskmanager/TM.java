@@ -19,10 +19,14 @@ package org.qiyi.basecore.taskmanager;
 
 import android.os.Handler;
 
+import org.qiyi.basecore.taskmanager.callable.ArrayEachCall;
+import org.qiyi.basecore.taskmanager.callable.IterableEachCall;
+import org.qiyi.basecore.taskmanager.callable.MapEachCall;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
 import org.qiyi.basecore.taskmanager.struct.DataMaker;
 
+import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -182,14 +186,27 @@ public class TM {
     /**
      * 顺序执行任务替代handler
      */
-    public static void postSerial(Runnable runnable, String groupName){
-        if(runnable != null) {
+    public static void postSerial(Runnable runnable, String groupName) {
+        if (runnable != null) {
             new RunnableTask(runnable).postSerial(groupName);
         }
     }
 
-    public static Executor getExecutor(){
+    public static Executor getExecutor() {
         return executor;
+    }
+
+
+    public static <T> IterableEachCall<T> forEach(Iterable<T> iterable) {
+        return new IterableEachCall<>(iterable);
+    }
+
+    public static <K, V> MapEachCall<K, V> forEach(HashMap<K, V> map) {
+        return new MapEachCall<>(map);
+    }
+
+    public static <T> IterableEachCall<T> forEach(T[] array) {
+        return new ArrayEachCall<>(array);
     }
 
 }
