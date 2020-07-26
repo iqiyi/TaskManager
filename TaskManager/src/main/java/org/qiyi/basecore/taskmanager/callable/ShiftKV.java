@@ -36,6 +36,7 @@ public abstract class ShiftKV<K, V> extends Shift<HashMap.Entry<K, V>> {
     public ShiftKV() {
     }
 
+
     void addNext(ShiftKV<K, V> shift) {
         if (shift != null) {
             mChildren.addLast(shift);
@@ -79,7 +80,7 @@ public abstract class ShiftKV<K, V> extends Shift<HashMap.Entry<K, V>> {
 
     }
 
-    private void doCallEach(CallEachKV<K, V> call){
+    private void doCallEach(CallEachKV<K, V> call) {
         if (mChildren.isEmpty()) {
             callEach(call);
         } else {
@@ -87,6 +88,15 @@ public abstract class ShiftKV<K, V> extends Shift<HashMap.Entry<K, V>> {
                 var.call(call);
             }
         }
+    }
+
+    final ShiftKV<K, V>  shiftKV(){
+        return shiftKV(new ShiftCallKV<K, V, MapEachCall<K, V>>() {
+            @Override
+            public MapEachCall<K, V> call(K key, V value) {
+                return copy();
+            }
+        });
     }
 
     public final <RK, RV> MapEachCall<RK, RV> shiftKV(ShiftCallKV<K, V, MapEachCall<RK, RV>> each2) {
@@ -126,11 +136,21 @@ public abstract class ShiftKV<K, V> extends Shift<HashMap.Entry<K, V>> {
 
 
     public ShiftKV<K, V> preCall(IPreCall<HashMap.Entry<K, V>> preCall) {
+        if (mPreCall != null) {
+            ShiftKV<K, V> var = shiftKV();
+            var.preCall(preCall);
+            return var;
+        }
         mPreCall = preCall;
         return this;
     }
 
     public ShiftKV<K, V> afterCall(IAfterCall<HashMap.Entry<K, V>> afterCall) {
+        if (mAfterCall != null) {
+            ShiftKV<K, V> var = shiftKV();
+            var.afterCall(afterCall);
+            return var;
+        }
         mAfterCall = afterCall;
         return this;
     }
@@ -142,5 +162,6 @@ public abstract class ShiftKV<K, V> extends Shift<HashMap.Entry<K, V>> {
 
     protected abstract void callEach(CallEachKV<K, V> each);
 
+    protected abstract MapEachCall<K,V> copy();
 
 }

@@ -12,7 +12,6 @@ public class Shift<T> {
     protected IAfterCall<T> mAfterCall;
     protected Shift<T> mParent;
 
-
     LinkedList<PreCall<?>> getPreCalls() {
         return mPreCalls;
     }
@@ -20,7 +19,6 @@ public class Shift<T> {
     LinkedList<AfterCall<?>> getAfterCall() {
         return mAfterCalls;
     }
-
 
     void doPreCall() {
         if (mPreCalls != null && !mPreCalls.isEmpty()) {
@@ -66,4 +64,5 @@ public class Shift<T> {
             mAfterCalls.addFirst(afterCall);
         }
     }
+
 }

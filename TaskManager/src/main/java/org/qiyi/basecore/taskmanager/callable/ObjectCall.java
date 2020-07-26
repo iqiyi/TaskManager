@@ -1,5 +1,7 @@
 package org.qiyi.basecore.taskmanager.callable;
 
+import androidx.annotation.NonNull;
+
 import org.qiyi.basecore.taskmanager.callable.iface.CallEachT;
 import org.qiyi.basecore.taskmanager.callable.iface.ShiftCallT;
 
@@ -13,16 +15,15 @@ public class ObjectCall<T> extends ShiftT<T> {
     public ObjectCall() {
     }
 
-
     @Override
-    protected <R> void shiftEach(ShiftT<R> chain, ShiftCallT<T, ? extends ShiftT<R>> each) {
+    protected <R> void shiftEach(ShiftT<R> chain,@NonNull ShiftCallT<T, ? extends ShiftT<R>> each) {
         chain.addNext(each.call(mValue));
         buildPreCall(mValue);
         buildAfterCall(mValue);
     }
 
     @Override
-    protected <K, V> void shiftEach(ShiftKV<K, V> chain, ShiftCallT<T, ? extends ShiftKV<K, V>> each) {
+    protected <K, V> void shiftEach(ShiftKV<K, V> chain, @NonNull ShiftCallT<T, ? extends ShiftKV<K, V>> each) {
         chain.addNext(each.call(mValue));
         buildPreCall(mValue);
         buildAfterCall(mValue);

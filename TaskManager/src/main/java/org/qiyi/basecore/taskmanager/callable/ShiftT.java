@@ -1,5 +1,7 @@
 package org.qiyi.basecore.taskmanager.callable;
 
+import androidx.annotation.NonNull;
+
 import org.qiyi.basecore.taskmanager.Task;
 import org.qiyi.basecore.taskmanager.callable.iface.CallEachT;
 import org.qiyi.basecore.taskmanager.callable.iface.IAfterCall;
@@ -40,7 +42,7 @@ public abstract class ShiftT<T> extends Shift<T> {
      * @param <R>
      * @return
      */
-    public final <R> ShiftT<R> shiftT(ShiftCallT<T, ShiftT<R>> each) {
+    public final <R> ShiftT<R> shiftT(@NonNull ShiftCallT<T, ShiftT<R>> each) {
 
         IterableEachCall<R> result = new IterableEachCall<>();
         result.setCall(this);
@@ -60,7 +62,18 @@ public abstract class ShiftT<T> extends Shift<T> {
     }
 
 
-    public final <K, V> MapEachCall<K, V> shiftKV(ShiftCallT<T, ? extends MapEachCall<K, V>> each) {
+    final ShiftT<T> shiftT() {
+        ShiftT<T> result = shiftT(new ShiftCallT<T, ShiftT<T>>() {
+            @Override
+            public ShiftT<T> call(T value) {
+                return ShiftFactory.create(value);
+            }
+        });
+        return result;
+    }
+
+
+    public final <K, V> MapEachCall<K, V> shiftKV(@NonNull ShiftCallT<T, ? extends MapEachCall<K, V>> each) {
 
         MapEachCall<K, V> result = new MapEachCall<>();
         result.setCall(this);
@@ -112,15 +125,24 @@ public abstract class ShiftT<T> extends Shift<T> {
     }
 
     public ShiftT<T> preCall(IPreCall<T> preCall) {
+        if (mPreCall != null) {
+            ShiftT<T> var = shiftT();
+            var.preCall(preCall);
+            return var;
+        }
         mPreCall = preCall;
         return this;
     }
 
     public ShiftT<T> afterCall(IAfterCall<T> afterCall) {
+        if (mAfterCall != null) {
+            ShiftT<T> var = shiftT();
+            var.afterCall(afterCall);
+            return var;
+        }
         mAfterCall = afterCall;
         return this;
     }
-
 
     protected abstract <R> void shiftEach(ShiftT<R> chain, ShiftCallT<T, ? extends ShiftT<R>> each);
 

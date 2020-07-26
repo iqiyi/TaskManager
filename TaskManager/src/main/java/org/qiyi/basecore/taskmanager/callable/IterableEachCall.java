@@ -31,15 +31,15 @@ public class IterableEachCall<T> extends ShiftT<T> {
 
 
     public IterableEachCall() {
-
     }
-
 
     @Override
     protected <R> void shiftEach(ShiftT<R> chain, ShiftCallT<T, ? extends ShiftT<R>> each) {
         if (mIterable != null) {
             for (T var : mIterable) {
-                chain.addNext(each.call(var));
+                if (each != null) {
+                    chain.addNext(each.call(var));
+                }
                 buildPreCall(var);
                 buildAfterCall(var);
             }
@@ -50,7 +50,9 @@ public class IterableEachCall<T> extends ShiftT<T> {
     protected <K, V> void shiftEach(ShiftKV<K, V> chain, ShiftCallT<T, ? extends ShiftKV<K, V>> each) {
         if (mIterable != null) {
             for (T var : mIterable) {
-                chain.addNext(each.call(var));
+                if (each != null) {
+                    chain.addNext(each.call(var));
+                }
                 buildPreCall(var);
                 buildAfterCall(var);
             }

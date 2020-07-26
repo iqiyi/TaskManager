@@ -17,6 +17,8 @@
  */
 package org.qiyi.basecore.taskmanager.callable;
 
+import androidx.annotation.NonNull;
+
 import org.qiyi.basecore.taskmanager.callable.iface.CallEachKV;
 import org.qiyi.basecore.taskmanager.callable.iface.ShiftCallKV;
 
@@ -35,7 +37,7 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
     }
 
     @Override
-    protected <RK, RV> void shiftEach(ShiftKV<RK, RV> chain, ShiftCallKV<K, V, ? extends ShiftKV<RK, RV>> each) {
+    protected <RK, RV> void shiftEach(ShiftKV<RK, RV> chain, @NonNull ShiftCallKV<K, V, ? extends ShiftKV<RK, RV>> each) {
         if (mMap != null && each != null) {
             Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
             while (iterable.hasNext()) {
@@ -49,7 +51,7 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
     }
 
     @Override
-    protected <T> void shiftEach(ShiftT<T> chain, ShiftCallKV<K, V, ? extends ShiftT<T>> each) {
+    protected <T> void shiftEach(ShiftT<T> chain, @NonNull ShiftCallKV<K, V, ? extends ShiftT<T>> each) {
         if (mMap == null || each == null) return;
 
         for (Map.Entry<K, V> var : mMap.entrySet()) {
@@ -75,6 +77,11 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
                 }
             }
         }
+    }
+
+    @Override
+    protected MapEachCall<K, V> copy() {
+        return ShiftFactory.create(mMap);
     }
 
     private void buildPreCall(Map.Entry<K, V> entry) {
