@@ -62,27 +62,27 @@ public class IterableEachCall<T> extends ShiftT<T> {
         if (mIterable != null) {
             for (T var : mIterable) {
                 buildPreCall(var);
-                if(call != null) {
+                buildAfterCall(var);
+
+                if (call != null) {
                     doPreCall();
                     call.call(var);
-                }
-                buildAfterCall(var);
-                if(call != null) {
                     doAfterCall();
                 }
+
             }
         }
     }
 
-    private void buildPreCall(T var){
-        if(mPreCall != null) {
+    private void buildPreCall(T var) {
+        if (mPreCall != null) {
             PreCall<T> preCall = new PreCall<>(var, mPreCall);
             addPreCall(preCall);
         }
     }
 
-    private void buildAfterCall(T var){
-        if(mAfterCall != null) {
+    private void buildAfterCall(T var) {
+        if (mAfterCall != null) {
             AfterCall<T> afterCall = new AfterCall<>(var, mAfterCall);
             addAfterCall(afterCall);
         }

@@ -16,24 +16,31 @@ public class ObjectCall<T> extends ShiftT<T> {
 
     @Override
     protected <R> void shiftEach(ShiftT<R> chain, ShiftCallT<T, ? extends ShiftT<R>> each) {
-        buildPreCall(mValue);
         chain.addNext(each.call(mValue));
+        buildPreCall(mValue);
         buildAfterCall(mValue);
     }
 
     @Override
     protected <K, V> void shiftEach(ShiftKV<K, V> chain, ShiftCallT<T, ? extends ShiftKV<K, V>> each) {
-        buildPreCall(mValue);
         chain.addNext(each.call(mValue));
+        buildPreCall(mValue);
         buildAfterCall(mValue);
 
     }
 
     @Override
     protected void callEach(CallEachT<T> call) {
-        doPreCall();
-        call.call(mValue);
-        doAfterCall();
+
+        buildPreCall(mValue);
+        buildAfterCall(mValue);
+
+        if (call != null) {
+            doPreCall();
+            call.call(mValue);
+            doAfterCall();
+        }
+
     }
 
     private void buildPreCall(T var) {

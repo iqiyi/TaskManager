@@ -123,6 +123,7 @@ public class TaskManagerConfig implements ITaskManagerConfig {
     }
 
 
+    @Deprecated
     public TaskManagerConfig setThreadPoolStrategy(int strategy){
         threadPoolStrategy = strategy;
         return this;
@@ -145,6 +146,11 @@ public class TaskManagerConfig implements ITaskManagerConfig {
         TaskManager.setConfig(application, this);
     }
 
+    /**
+     * from 1.4.0 on : Thread pool only support STRATEGY_THREAD_GROUP
+     * @return
+     */
+    @Deprecated
     public int getThreadPoolStrategy() {
         return threadPoolStrategy;
     }

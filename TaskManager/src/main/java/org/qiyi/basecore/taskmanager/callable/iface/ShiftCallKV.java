@@ -17,8 +17,6 @@
  */
 package org.qiyi.basecore.taskmanager.callable.iface;
 
-import org.qiyi.basecore.taskmanager.callable.IterableEachCall;
-
 public interface ShiftCallKV<K, V, R> {
     R call(K key, V value);
 }

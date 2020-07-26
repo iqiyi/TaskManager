@@ -1,7 +1,5 @@
 package org.qiyi.basecore.taskmanager.callable;
 
-import androidx.annotation.CallSuper;
-
 import org.qiyi.basecore.taskmanager.callable.iface.IAfterCall;
 import org.qiyi.basecore.taskmanager.callable.iface.IPreCall;
 
@@ -12,7 +10,7 @@ public class Shift<T> {
     LinkedList<AfterCall<?>> mAfterCalls = new LinkedList<>();
     protected IPreCall<T> mPreCall;
     protected IAfterCall<T> mAfterCall;
-
+    protected Shift<T> mParent;
 
 
     LinkedList<PreCall<?>> getPreCalls() {
@@ -23,24 +21,9 @@ public class Shift<T> {
         return mAfterCalls;
     }
 
-    @CallSuper
-    void addPreCall(PreCall<?> preCall) {
-
-//        if (mPreCalls == null) {
-//            mPreCalls = new LinkedList<>();
-//        }
-        mPreCalls.addLast(preCall);
-    }
-
-    void addAfterCall(AfterCall<?> afterCall) {
-//        if(mAfterCalls == null) {
-//            mAfterCalls = new LinkedList<>();
-//        }
-        mAfterCalls.addFirst(afterCall);
-    }
 
     void doPreCall() {
-        if (mPreCalls != null) {
+        if (mPreCalls != null && !mPreCalls.isEmpty()) {
             for (PreCall<?> preCall : mPreCalls) {
                 preCall.call();
             }
@@ -51,7 +34,7 @@ public class Shift<T> {
 
     void doAfterCall() {
 
-        if(mAfterCalls != null) {
+        if (mAfterCalls != null && !mAfterCalls.isEmpty()) {
             for (AfterCall<?> afterCall : mAfterCalls) {
                 afterCall.call();
             }
@@ -61,11 +44,26 @@ public class Shift<T> {
     }
 
 
-    public void setCall(Shift shift){
-        if(shift != null) {
+    void setCall(Shift shift) {
+        if (shift != null) {
             mAfterCalls = shift.getAfterCall();
             mPreCalls = shift.getPreCalls();
         }
     }
 
+    void addPreCall(PreCall<?> preCall) {
+        if (mParent != null) {
+            mParent.addPreCall(preCall);
+        } else {
+            mPreCalls.addLast(preCall);
+        }
+    }
+
+    void addAfterCall(AfterCall<?> afterCall) {
+        if (mParent != null) {
+            mParent.addAfterCall(afterCall);
+        } else {
+            mAfterCalls.addFirst(afterCall);
+        }
+    }
 }

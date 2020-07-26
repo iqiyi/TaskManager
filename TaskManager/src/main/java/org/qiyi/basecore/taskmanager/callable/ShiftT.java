@@ -1,7 +1,5 @@
 package org.qiyi.basecore.taskmanager.callable;
 
-import androidx.annotation.CallSuper;
-
 import org.qiyi.basecore.taskmanager.Task;
 import org.qiyi.basecore.taskmanager.callable.iface.CallEachT;
 import org.qiyi.basecore.taskmanager.callable.iface.IAfterCall;
@@ -12,9 +10,8 @@ import java.util.LinkedList;
 
 public abstract class ShiftT<T> extends Shift<T> {
     protected CallEachT<T> mEach;
-    protected ShiftT<T> mParent;
-    private LinkedList<ShiftT<T>> mChildren = new LinkedList<>();
 
+    private LinkedList<ShiftT<T>> mChildren = new LinkedList<>();
 
 
     public final void call(CallEachT<T> value) {
@@ -89,22 +86,20 @@ public abstract class ShiftT<T> extends Shift<T> {
     }
 
     private void run() {
-        if(mPreCall != null || mAfterCall != null) {
+        if (mPreCall != null || mAfterCall != null) {
             // prepare build call
             doCallEach(null);
             mPreCall = null;
             mAfterCall = null;
-
-
         }
-        if(mEach != null) {
+        if (mEach != null) {
             doPreCall();
             doCallEach(mEach);
             doAfterCall();
         }
     }
 
-    private void doCallEach(CallEachT<T> each){
+    private void doCallEach(CallEachT<T> each) {
         if (mChildren.isEmpty()) {
             callEach(each);
         } else {
@@ -117,9 +112,7 @@ public abstract class ShiftT<T> extends Shift<T> {
     }
 
     public ShiftT<T> preCall(IPreCall<T> preCall) {
-
         mPreCall = preCall;
-
         return this;
     }
 
@@ -128,14 +121,6 @@ public abstract class ShiftT<T> extends Shift<T> {
         return this;
     }
 
-    @Override
-    void addPreCall(PreCall<?> preCall) {
-        if(mParent != null) {
-            mParent.addPreCall(preCall);
-        } else {
-            super.addPreCall(preCall);
-        }
-    }
 
     protected abstract <R> void shiftEach(ShiftT<R> chain, ShiftCallT<T, ? extends ShiftT<R>> each);
 

@@ -26,8 +26,6 @@ import java.util.Map;
 public final class MapEachCall<K, V> extends ShiftKV<K, V> {
 
     private Map<K, V> mMap;
-    private CallEachKV<K, V> mEach;
-
 
     public MapEachCall(Map<K, V> map) {
         mMap = map;
@@ -42,8 +40,8 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
             Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
             while (iterable.hasNext()) {
                 Map.Entry<K, V> var = iterable.next();
-                buildPreCall(var);
                 chain.addNext(each.call(var.getKey(), var.getValue()));
+                buildPreCall(var);
                 buildAfterCall(var);
 
             }
@@ -52,11 +50,11 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
 
     @Override
     protected <T> void shiftEach(ShiftT<T> chain, ShiftCallKV<K, V, ? extends ShiftT<T>> each) {
-        Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
-        while (iterable.hasNext()) {
-            Map.Entry<K, V> var = iterable.next();
-            buildPreCall(var);
+        if (mMap == null || each == null) return;
+
+        for (Map.Entry<K, V> var : mMap.entrySet()) {
             chain.addNext(each.call(var.getKey(), var.getValue()));
+            buildPreCall(var);
             buildAfterCall(var);
         }
     }
@@ -64,15 +62,17 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
 
     @Override
     protected void callEach(CallEachKV<K, V> each) {
-        if (mMap != null && each != null) {
-            Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
-            while (iterable.hasNext()) {
-                Map.Entry<K, V> var = iterable.next();
+        if (mMap != null) {
+            for (Map.Entry<K, V> var : mMap.entrySet()) {
+
                 buildPreCall(var);
-                doPreCall();
-                each.call(var.getKey(), var.getValue());
                 buildAfterCall(var);
-                doAfterCall();
+
+                if (each != null) {
+                    doPreCall();
+                    each.call(var.getKey(), var.getValue());
+                    doAfterCall();
+                }
             }
         }
     }

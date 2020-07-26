@@ -22,6 +22,7 @@ import android.os.Handler;
 import org.qiyi.basecore.taskmanager.callable.ArrayEachCall;
 import org.qiyi.basecore.taskmanager.callable.IterableEachCall;
 import org.qiyi.basecore.taskmanager.callable.MapEachCall;
+import org.qiyi.basecore.taskmanager.callable.ObjectCall;
 import org.qiyi.basecore.taskmanager.callable.ShiftFactory;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
@@ -219,5 +220,8 @@ public class TM {
         return ShiftFactory.create(array);
     }
 
+    public static <T> ObjectCall<T> just(T object) {
+        return new ObjectCall<>(object);
+    }
 
 }
