@@ -1,107 +1,94 @@
+/*
+ *
+ * Copyright (C) 2020 iQIYI (www.iqiyi.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.qiyi.basecore.taskmanager.callable;
 
-import org.qiyi.basecore.taskmanager.TM;
-import org.qiyi.basecore.taskmanager.callable.iface.CallEach2;
-import org.qiyi.basecore.taskmanager.callable.iface.ShiftKVCallEach2;
-import org.qiyi.basecore.taskmanager.callable.iface.ShiftTCallEach2;
+import org.qiyi.basecore.taskmanager.callable.iface.CallEachKV;
+import org.qiyi.basecore.taskmanager.callable.iface.ShiftCallKV;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
-public final class MapEachCall<K, V> implements Runnable {
+public final class MapEachCall<K, V> extends ShiftKV<K, V> {
 
     private Map<K, V> mMap;
-    private CallEach2<K, V> mEach;
-    private LinkedList<MapEachCall<K, V>> mChildren = new LinkedList<>();
+    private CallEachKV<K, V> mEach;
+
 
     public MapEachCall(Map<K, V> map) {
         mMap = map;
     }
 
     MapEachCall() {
-
     }
 
-    public void call(CallEach2<K, V> each) {
-        mEach = each;
-        run();
-        return;
-    }
-
-    public void callAsync(CallEach2<K, V> each) {
-        mEach = each;
-        TM.postAsync(this);
-    }
-
-
-    public <RK, RV> MapEachCall<RK, RV> shiftKV(ShiftKVCallEach2<K, V, RK, RV> each2) {
-
-        MapEachCall<RK, RV> mapEachCall = new MapEachCall<>();
-
-        if (mChildren.isEmpty()) {
-
-            if (mMap != null && each2 != null) {
-                Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
-                while (iterable.hasNext()) {
-                    Map.Entry<K, V> var = iterable.next();
-                    mapEachCall.addNext(each2.call(var.getKey(), var.getValue()));
-                }
-            }
-
-        } else {
-
-            for (MapEachCall<K, V> var : mChildren) {
-                mapEachCall.addNext(var.shiftKV(each2));
-            }
-        }
-        return mapEachCall;
-    }
-
-    public <R> IterableEachCall<R> shiftT(ShiftTCallEach2<K, V, R> each2) {
-
-        IterableEachCall<R> iterableEachCall = new IterableEachCall<>();
-
-        if (mChildren.isEmpty()) {
-
-            Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
-            while (iterable.hasNext()) {
-                Map.Entry<K, V> var = iterable.next();
-                iterableEachCall.addNext(each2.call(var.getKey(), var.getValue()));
-            }
-        } else {
-
-            for (MapEachCall<K, V> var : mChildren) {
-                iterableEachCall.addNext(var.shiftT(each2));
-            }
-        }
-        return iterableEachCall;
-    }
-
-
-    void addNext(MapEachCall<K, V> shift) {
-        mChildren.addLast(shift);
-    }
-
-    private void callEach(CallEach2<K, V> each) {
+    @Override
+    protected <RK, RV> void shiftEach(ShiftKV<RK, RV> chain, ShiftCallKV<K, V, ? extends ShiftKV<RK, RV>> each) {
         if (mMap != null && each != null) {
             Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
             while (iterable.hasNext()) {
                 Map.Entry<K, V> var = iterable.next();
-                each.call(var.getKey(), var.getValue());
+                buildPreCall(var);
+                chain.addNext(each.call(var.getKey(), var.getValue()));
+                buildAfterCall(var);
+
             }
         }
     }
 
     @Override
-    public void run() {
-        if (mChildren.isEmpty()) {
-            callEach(mEach);
-        } else {
-            for (MapEachCall<K, V> var : mChildren) {
-                var.call(mEach);
+    protected <T> void shiftEach(ShiftT<T> chain, ShiftCallKV<K, V, ? extends ShiftT<T>> each) {
+        Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
+        while (iterable.hasNext()) {
+            Map.Entry<K, V> var = iterable.next();
+            buildPreCall(var);
+            chain.addNext(each.call(var.getKey(), var.getValue()));
+            buildAfterCall(var);
+        }
+    }
+
+
+    @Override
+    protected void callEach(CallEachKV<K, V> each) {
+        if (mMap != null && each != null) {
+            Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
+            while (iterable.hasNext()) {
+                Map.Entry<K, V> var = iterable.next();
+                buildPreCall(var);
+                doPreCall();
+                each.call(var.getKey(), var.getValue());
+                buildAfterCall(var);
+                doAfterCall();
             }
         }
-
     }
+
+    private void buildPreCall(Map.Entry<K, V> entry) {
+        if (mPreCall != null) {
+            PreCall<Map.Entry<K, V>> preCall = new PreCall<>(entry, mPreCall);
+            addPreCall(preCall);
+        }
+    }
+
+    private void buildAfterCall(Map.Entry<K, V> var) {
+        if (mAfterCall != null) {
+            AfterCall<Map.Entry<K, V>> afterCall = new AfterCall<>(var, mAfterCall);
+            addAfterCall(afterCall);
+        }
+    }
+
 }

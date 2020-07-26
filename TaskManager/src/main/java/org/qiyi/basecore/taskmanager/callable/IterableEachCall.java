@@ -1,114 +1,92 @@
+/*
+ *
+ * Copyright (C) 2020 iQIYI (www.iqiyi.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.qiyi.basecore.taskmanager.callable;
 
-import org.qiyi.basecore.taskmanager.TM;
-import org.qiyi.basecore.taskmanager.callable.iface.CallEach1;
-import org.qiyi.basecore.taskmanager.callable.iface.ShiftKVCallEach1;
-import org.qiyi.basecore.taskmanager.callable.iface.ShiftTCallEach1;
-
-import java.util.LinkedList;
+import org.qiyi.basecore.taskmanager.callable.iface.CallEachT;
+import org.qiyi.basecore.taskmanager.callable.iface.ShiftCallT;
 
 
-public class IterableEachCall<T> implements Runnable {
+public class IterableEachCall<T> extends ShiftT<T> {
 
     protected Iterable<T> mIterable;
-    private CallEach1<T> mEach;
-    private LinkedList<IterableEachCall<T>> mChildren = new LinkedList<>();
 
     public IterableEachCall(Iterable<T> iterable) {
         mIterable = iterable;
     }
 
-    IterableEachCall() {
 
-    }
+    public IterableEachCall() {
 
-    void addNext(IterableEachCall<T> call) {
-        mChildren.addLast(call);
-    }
-
-    public void call(CallEach1<T> each) {
-        mEach = each;
-        run();
-    }
-
-
-    public void callAsync(CallEach1<T> each) {
-        mEach = each;
-        TM.postAsync(this);
-    }
-
-    private void callChildren(CallEach1<T> each) {
-        for (IterableEachCall<T> t : mChildren) {
-            if (t == null) continue;
-            t.call(each);
-        }
-    }
-
-
-    /**
-     * T:  传入的参数类型
-     * R:  返回的参数类型
-     *
-     * @param each
-     * @param <R>
-     * @return
-     */
-    public <R> IterableEachCall<R> shiftT(ShiftTCallEach1<T, R> each) {
-
-        IterableEachCall<R> result = new IterableEachCall<>();
-        if (mChildren.isEmpty()) {
-            // each should return this type;
-            if (mIterable != null) {
-                for (T var : mIterable) {
-                    result.addNext(each.call(var));
-                }
-            }
-        } else {
-            for (IterableEachCall<T> t : mChildren) {
-                result.addNext(t.shiftT(each));
-            }
-        }
-        return result;
-    }
-
-
-    public <K, V> MapEachCall<K, V> shiftKV(ShiftKVCallEach1<T, K, V> each) {
-
-        MapEachCall<K, V> result = new MapEachCall<>();
-        if (mChildren.isEmpty()) {
-            // each should return this type;
-            if (mIterable != null) {
-                for (T var : mIterable) {
-                    result.addNext(each.call(var));
-                }
-            }
-        } else {
-            for (IterableEachCall<T> t : mChildren) {
-                result.addNext(t.shiftKV(each));
-            }
-        }
-        return result;
-    }
-
-
-    public void callEach() {
-        if (mIterable == null) {
-            return;
-        }
-
-        for (T var : mIterable) {
-            mEach.call(var);
-        }
     }
 
 
     @Override
-    public void run() {
-        if (mChildren.isEmpty()) {
-            callEach();
-        } else {
-            callChildren(mEach);
+    protected <R> void shiftEach(ShiftT<R> chain, ShiftCallT<T, ? extends ShiftT<R>> each) {
+        if (mIterable != null) {
+            for (T var : mIterable) {
+                chain.addNext(each.call(var));
+                buildPreCall(var);
+                buildAfterCall(var);
+            }
         }
-
     }
+
+    @Override
+    protected <K, V> void shiftEach(ShiftKV<K, V> chain, ShiftCallT<T, ? extends ShiftKV<K, V>> each) {
+        if (mIterable != null) {
+            for (T var : mIterable) {
+                chain.addNext(each.call(var));
+                buildPreCall(var);
+                buildAfterCall(var);
+            }
+        }
+    }
+
+    @Override
+    protected void callEach(CallEachT<T> call) {
+        if (mIterable != null) {
+            for (T var : mIterable) {
+                buildPreCall(var);
+                if(call != null) {
+                    doPreCall();
+                    call.call(var);
+                }
+                buildAfterCall(var);
+                if(call != null) {
+                    doAfterCall();
+                }
+            }
+        }
+    }
+
+    private void buildPreCall(T var){
+        if(mPreCall != null) {
+            PreCall<T> preCall = new PreCall<>(var, mPreCall);
+            addPreCall(preCall);
+        }
+    }
+
+    private void buildAfterCall(T var){
+        if(mAfterCall != null) {
+            AfterCall<T> afterCall = new AfterCall<>(var, mAfterCall);
+            addAfterCall(afterCall);
+        }
+    }
+
+
 }

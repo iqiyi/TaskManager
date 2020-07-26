@@ -15,16 +15,13 @@
  * limitations under the License.
  *
  */
-package org.qiyi.basecore.taskmanager.callable;
+package org.qiyi.basecore.taskmanager.callable.iface;
 
-import java.util.Arrays;
-
-public final class ArrayEachCall<T> extends IterableEachCall<T> {
-
-    public ArrayEachCall(T[] array) {
-        if (array != null) {
-            mIterable = Arrays.asList(array);
-        }
-    }
-
+/**
+ * used as call params
+ * @param <K>
+ * @param <V>
+ */
+public interface CallEachKV<K, V> {
+    void call(K key, V value);
 }

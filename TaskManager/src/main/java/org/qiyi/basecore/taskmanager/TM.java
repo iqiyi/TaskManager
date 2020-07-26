@@ -22,6 +22,7 @@ import android.os.Handler;
 import org.qiyi.basecore.taskmanager.callable.ArrayEachCall;
 import org.qiyi.basecore.taskmanager.callable.IterableEachCall;
 import org.qiyi.basecore.taskmanager.callable.MapEachCall;
+import org.qiyi.basecore.taskmanager.callable.ShiftFactory;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.ObjectPool;
 import org.qiyi.basecore.taskmanager.struct.DataMaker;
@@ -208,5 +209,15 @@ public class TM {
     public static <T> IterableEachCall<T> forEach(T[] array) {
         return new ArrayEachCall<>(array);
     }
+    public static IterableEachCall<Integer> forEach(int[] array){
+        return ShiftFactory.create(array);
+    }
+    public static IterableEachCall<Float> forEach(float[] array){
+        return ShiftFactory.create(array);
+    }
+    public static IterableEachCall<Double> forEach(double[] array){
+        return ShiftFactory.create(array);
+    }
+
 
 }
