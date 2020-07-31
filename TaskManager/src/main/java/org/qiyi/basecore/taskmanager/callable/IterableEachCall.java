@@ -67,9 +67,7 @@ public class IterableEachCall<T> extends ShiftT<T> {
                 buildAfterCall(var);
 
                 if (call != null) {
-                    doPreCall();
                     call.call(var);
-                    doAfterCall();
                 }
 
             }

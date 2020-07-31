@@ -20,9 +20,11 @@ package org.qiyi.basecore.taskmanager.callable;
 import androidx.annotation.NonNull;
 
 import org.qiyi.basecore.taskmanager.callable.iface.CallEachKV;
+import org.qiyi.basecore.taskmanager.callable.iface.IAfterCall;
+import org.qiyi.basecore.taskmanager.callable.iface.IPreCall;
 import org.qiyi.basecore.taskmanager.callable.iface.ShiftCallKV;
 
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 
 public final class MapEachCall<K, V> extends ShiftKV<K, V> {
@@ -39,14 +41,13 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
     @Override
     protected <RK, RV> void shiftEach(ShiftKV<RK, RV> chain, @NonNull ShiftCallKV<K, V, ? extends ShiftKV<RK, RV>> each) {
         if (mMap != null && each != null) {
-            Iterator<Map.Entry<K, V>> iterable = mMap.entrySet().iterator();
-            while (iterable.hasNext()) {
-                Map.Entry<K, V> var = iterable.next();
+            for (Map.Entry<K, V> var : mMap.entrySet()) {
                 chain.addNext(each.call(var.getKey(), var.getValue()));
-                buildPreCall(var);
-                buildAfterCall(var);
-
+                buildPreCall(var, mPreCall);
+                buildAfterCall(var, mAfterCall);
             }
+            mAfterCall = null;
+            mPreCall = null;
         }
     }
 
@@ -56,9 +57,12 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
 
         for (Map.Entry<K, V> var : mMap.entrySet()) {
             chain.addNext(each.call(var.getKey(), var.getValue()));
-            buildPreCall(var);
-            buildAfterCall(var);
+            buildPreCall(var, mPreCall);
+            buildAfterCall(var, mAfterCall);
         }
+
+        mAfterCall = null;
+        mPreCall = null;
     }
 
 
@@ -67,15 +71,16 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
         if (mMap != null) {
             for (Map.Entry<K, V> var : mMap.entrySet()) {
 
-                buildPreCall(var);
-                buildAfterCall(var);
+                buildPreCall(var, mPreCall);
+                buildAfterCall(var, mAfterCall);
 
                 if (each != null) {
-                    doPreCall();
                     each.call(var.getKey(), var.getValue());
-                    doAfterCall();
                 }
             }
+
+            mAfterCall = null;
+            mPreCall = null;
         }
     }
 
@@ -84,16 +89,16 @@ public final class MapEachCall<K, V> extends ShiftKV<K, V> {
         return ShiftFactory.create(mMap);
     }
 
-    private void buildPreCall(Map.Entry<K, V> entry) {
-        if (mPreCall != null) {
-            PreCall<Map.Entry<K, V>> preCall = new PreCall<>(entry, mPreCall);
+    private void buildPreCall(Map.Entry<K, V> entry, IPreCall<HashMap.Entry<K, V>> callback) {
+        if (callback != null) {
+            PreCall<Map.Entry<K, V>> preCall = new PreCall<>(entry, callback);
             addPreCall(preCall);
         }
     }
 
-    private void buildAfterCall(Map.Entry<K, V> var) {
-        if (mAfterCall != null) {
-            AfterCall<Map.Entry<K, V>> afterCall = new AfterCall<>(var, mAfterCall);
+    private void buildAfterCall(Map.Entry<K, V> var, IAfterCall<HashMap.Entry<K, V>> callback) {
+        if (callback != null) {
+            AfterCall<Map.Entry<K, V>> afterCall = new AfterCall<>(var, callback);
             addAfterCall(afterCall);
         }
     }

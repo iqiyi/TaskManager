@@ -74,4 +74,9 @@ public class ShiftFactory {
     }
 
 
+    public static<T> ObjectCall<T> just(T value) {
+        return new ObjectCall<>(value);
+    }
+
+
 }
