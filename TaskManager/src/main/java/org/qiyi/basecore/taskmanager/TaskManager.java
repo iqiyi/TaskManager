@@ -35,7 +35,7 @@ import org.qiyi.basecore.taskmanager.impl.model.TaskContainer;
 import org.qiyi.basecore.taskmanager.other.ExceptionUtils;
 import org.qiyi.basecore.taskmanager.other.TMLog;
 import org.qiyi.basecore.taskmanager.pool.CleanUp;
-import org.qiyi.basecore.taskmanager.threadpool.ThreadPoolFactory;
+import org.qiyi.basecore.taskmanager.threadpool.GroupedThreadPool;
 
 import java.util.List;
 
@@ -69,7 +69,8 @@ public class TaskManager {
         getTaskManagerConfig();
         defaultTimeOut = mConfig.getDefaultTimeout();
         taskPriorityTimePerGrade = mConfig.getTaskPriorityGradePerTime();
-        this.mTaskExecutor = ThreadPoolFactory.createExecutor(mConfig.getThreadPoolStrategy());
+        this.mTaskExecutor = new GroupedThreadPool();
+        //ThreadPoolFactory.createExecutor(mConfig.getThreadPoolStrategy());
         // reuse pool clean up & reference pool clean up
         mainHandler = mTaskExecutor.getMainHandler();
         if (mConfig.isMemoryCleanUpEnabled()) {

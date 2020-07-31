@@ -32,6 +32,12 @@ public interface ITaskManagerConfig {
 
     ITaskManagerConfig setWaitTimeCollectThreshold(long waitTimeCollectThreshold);
 
+    /**
+     * from 1.4.0 on : Thread pool only support STRATEGY_THREAD_GROUP
+     * @param strategy
+     * @return
+     */
+    @Deprecated
     ITaskManagerConfig setThreadPoolStrategy(int strategy);
 
     void initTaskManager(Application application);

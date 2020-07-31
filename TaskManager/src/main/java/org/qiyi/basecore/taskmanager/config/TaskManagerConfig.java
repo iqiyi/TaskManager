@@ -41,7 +41,6 @@ public class TaskManagerConfig implements ITaskManagerConfig {
     private boolean memoryCleanUpEnabled;
     private boolean enableFullLog;
     private int idleTaskOffset = 50;// for idle task serial run ; ms
-    private int threadPoolStrategy = 0;
 
     public TaskManagerConfig setDefaultTimeOut(int timeOut) {
         defaultTimeOut = timeOut;
@@ -125,7 +124,6 @@ public class TaskManagerConfig implements ITaskManagerConfig {
 
     @Deprecated
     public TaskManagerConfig setThreadPoolStrategy(int strategy){
-        threadPoolStrategy = strategy;
         return this;
     }
 
@@ -146,13 +144,5 @@ public class TaskManagerConfig implements ITaskManagerConfig {
         TaskManager.setConfig(application, this);
     }
 
-    /**
-     * from 1.4.0 on : Thread pool only support STRATEGY_THREAD_GROUP
-     * @return
-     */
-    @Deprecated
-    public int getThreadPoolStrategy() {
-        return threadPoolStrategy;
-    }
 
 }
